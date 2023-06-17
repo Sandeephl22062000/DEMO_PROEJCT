@@ -20,7 +20,7 @@ const UserSchema = mongoose.Schema(
       required: [true, "Please provide Password"],
       trim: true,
       minlength: 8,
-      maxlength: 30,
+      // maxlength: 30,
       validate: [
         validator.isStrongPassword,
         "Password Must Contain Atleast one upperCase alphabet,Atleast One LowerCase Alphabet,and Atleast 1 Special Character",
@@ -29,6 +29,12 @@ const UserSchema = mongoose.Schema(
     photo: {
       type: String,
     },
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
@@ -42,11 +48,11 @@ const UserSchema = mongoose.Schema(
 //   next();
 // });
 
-UserSchema.pre("save", async function (next) {
-  this.password = await bcrypt.hash(this.password, 12);
-  this.confirmPassword = undefined;
-  console.log(this.password);
-  next();
-});
+// UserSchema.pre("save", async function (next) {
+//   this.password = await bcrypt.hash(this.password, 12);
+//   this.confirmPassword = undefined;
+//   console.log(this.password);
+//   next();
+// });
 
 module.exports = mongoose.model("User", UserSchema);

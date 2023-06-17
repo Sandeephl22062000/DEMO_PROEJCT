@@ -8,12 +8,12 @@ const gloablErrorHandler = (err, req, res, next) => {
       message: "Duplicate Key Error",
     });
   }
-  if (err.name === "CastError") {
-    return res.status(404).json({
-      status: "failed",
-      message: "Please enter valid Product ID",
-    });
-  }
+  // if (err.name === "CastError") {
+  //   return res.status(404).json({
+  //     status: "failed",
+  //     message: "Please enter valid Product ID",
+  //   });
+  // }
   if (err.name === "ValidationError") {
     return res.status(404).json({
       status: "failed",

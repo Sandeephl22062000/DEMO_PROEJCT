@@ -30,18 +30,16 @@ const TrainerSchema = mongoose.Schema(
       type: String,
     },
     likeQuantity: { type: Number },
-    likeByUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Like" }],
 
     // Achievements: {
     //   type: String,
     // },
-    specialization:{
-      type:String,
+    specialization: {
+      type: String,
     },
-    experiences:{
-      type:String,
+    experiences: {
+      type: String,
     },
-    dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Dislike" }],
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
@@ -64,6 +62,16 @@ TrainerSchema.pre("save", async function (next) {
 
 TrainerSchema.virtual("comments", {
   ref: "Comment",
+  localField: "_id",
+  foreignField: "trainerID",
+});
+TrainerSchema.virtual("likes", {
+  ref: "Like",
+  localField: "_id",
+  foreignField: "trainerID",
+});
+TrainerSchema.virtual("dislikes", {
+  ref: "DisLike",
   localField: "_id",
   foreignField: "trainerID",
 });

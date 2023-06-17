@@ -1,4 +1,6 @@
 import { useFormik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
 import {
   ref as addRef,
   uploadBytesResumable,
@@ -7,19 +9,18 @@ import {
 import storage from "../../utils/firebase";
 import React, { useState } from "react";
 import validationSchema from "../schema/schema";
-import { Button, Container, TextField } from "@mui/material";
-import axios from "axios";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
+import { Box, Button, Container, TextField } from "@mui/material";
+import client from "../../features/client";
+import { useToasts } from "react-toast-notifications";
+
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Signup = () => {
   const [images, setImages] = useState("");
   const [role, setRole] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { addToast } = useToasts();
   const photoupload = (event) => {
     let file = event.target.files[0];
 
@@ -41,12 +42,9 @@ const Signup = () => {
     );
   };
 
-  const Userhandler = () => {
-   navigate("/signup")
+  const TrainerHandler = () => {
+    navigate("/trainersignup");
   };
-  const TrainerHandler = () =>{
-   navigate("/trainersignup")
-  }
   const formik = useFormik({
     initialValues: {
       fullName: "",
@@ -54,21 +52,44 @@ const Signup = () => {
       password: "",
       confirmPassword: "",
     },
-    validationSchema: validationSchema,
+    validationSchema: Yup.object({
+      fullName: Yup.string().min(2).max(25).required("Full Name is required"),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+      password: Yup.string().min(6).required("Password is required"),
+      confirmPassword: Yup.string()
+        .required("Confirm Password is required")
+        .oneOf([Yup.ref("password"), null], "Password does not match"),
+    }),
     onSubmit: (values, { resetForm }) => {
-      console.log(values);
-      console.log("users")
+      console.log("users");
       const sendData = async () => {
-        const postData = await axios.post(
-          "http://localhost:3000/api/users/register",
-          {
-            name: values.fullName,
-            email: values.email,
-            password: values.password,
-            photo: images,
-          }
-        );
-        resetForm();
+        try {
+          const response = await axios.post(
+            "http://localhost:8000/api/users/register",
+            {
+              name: values.fullName,
+              email: values.email,
+              password: values.password,
+              photo: images,
+            }
+          );
+          console.log(response.data);
+          addToast(response.data.message, {
+            appearance: "success",
+            autoDismiss: true,
+            autoDismissTimeout: 3000,
+          });
+          navigate("/login");
+          // resetForm();
+        } catch (error) {
+          addToast(error, {
+            appearance: "error",
+            autoDismiss: true,
+            autoDismissTimeout: 3000,
+          });
+        }
       };
       sendData();
     },
@@ -97,7 +118,6 @@ const Signup = () => {
             marginBottom: "16px",
           }}
         >
-          <Button onClick={Userhandler}>User</Button>
           <Button onClick={TrainerHandler}>Trainer</Button>
         </div>
         <form
@@ -174,6 +194,7 @@ const Signup = () => {
             helperText={formik.touched.photo && formik.errors.photo}
             sx={{ width: "100%", margin: "8px" }}
           />
+           <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Button
             type="submit"
             sx={{
@@ -186,6 +207,7 @@ const Signup = () => {
           >
             Submit
           </Button>
+          </Box>
         </form>
       </Container>
     </>

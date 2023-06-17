@@ -1,116 +1,247 @@
-/** @jsx jsx */
-import React, { useEffect } from "react";
-import { css, jsx } from "@emotion/core";
-import { useState } from "react";
-import Container from "../Global/Container";
-import Logo from "./NavbarLogo";
-import Menu from "./Menu";
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
-import {
-  Avatar,
-  Button,
-  Collapse,
-  FormControl,
-  InputLabel,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Select,
-} from "@mui/material";
-import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material";
-import { Box } from "@mui/system";
+import { useSelector } from "react-redux";
 
-// import Button from "../Global/Button/Button";
+const pages = [
+  "Food",
+  "Exercise",
+  "Trainer",
+  "Activities",
+  "Contact Us",
+  "About Us",
+];
+const settings = ["logout"];
 
-const Navbar = () => {
-  const [open, setOpen] = useState(true);
-  const [openMenu, setOpenMenu] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    !!localStorage.getItem("UserInfo")
-  );
-  const [signup, setSignUp] = useState("");
-  const UserInfo = localStorage.getItem("UserInfo");
+function ResponsiveAppBar() {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const user = useSelector((state) => state.user.user);
+  console.log(user);
+  const trainer = useSelector((state) => state.trainer.trainer);
+  console.log(trainer);
   const navigate = useNavigate();
-  const handleRegister = () => {
-    setOpen(!open);
-    navigate("/signup");
+
+  console.log("trainer", Object.keys(trainer).length === 0);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
   };
 
-  console.log(!!localStorage.getItem("UserInfo"));
-  const handleLogin = () => {
-    setOpen(!open);
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
   };
 
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
   const handleLogout = () => {
-    localStorage.removeItem("UserInfo");
-    setIsLoggedIn(false);
+    user.userInfo
+      ? localStorage.clear("UserInfo")
+      : localStorage.removeItem("TrainerIndo");
   };
-  useEffect(() => {
-    setIsLoggedIn(!isLoggedIn);
-  }, [UserInfo]);
-
   return (
-    <nav css={styles}>
-      <Container sx={{ display: "flex", justifyContent: "center" }}>
-        <Logo />
-        <Menu openMenu={openMenu} />
-        {isLoggedIn ? (
-          <Box>
-            <Button onClick={handleLogout}>Logout</Button>
+    <AppBar position="static" sx={{ background: "black" }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            Fitness
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem
+                  key={page}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate(`/${page.toLowerCase()}`);
+                  }}
+                >
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
-        ) : (
-          <Box>
-            <Button onClick={() => navigate("/signup")}>Register</Button>
-            <Button onClick={() => navigate("/login")}>Log in</Button>
+          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href=""
+            sx={{
+              mr: 2,
+              display: { xs: "flex", md: "none" },
+              flexGrow: 1,
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            LOGO
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            {pages.map((page) => (
+              <Button
+                key={page}
+                onClick={() => navigate(`/${page.toLowerCase()}`)}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                {page}
+              </Button>
+            ))}
           </Box>
-        )}
-        <i
-          onClick={() => setOpenMenu(!openMenu)}
-          id="burgerMenu"
-          className={
-            openMenu ? "fas fa-times fa-lg" : "fas fa-align-right fa-lg"
-          }
-        ></i>
+          {console.log("user", user)} {console.log("triner", trainer)}
+          {user.userInfo !== null || trainer.trainerInfo !== null ? (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">My Profile</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  <Typography textAlign="center">logout</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+          ) : (
+            <div>
+              <Button
+                id="basic-button"
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleClick}
+                sx={{ color: "white" }}
+              >
+                Register
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                <MenuItem onClick={handleClose}>User</MenuItem>
+                <MenuItem onClick={handleClose}>Trainer</MenuItem>
+              </Menu>
+              <Button
+                id="basic-button"
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleClick}
+                sx={{ color: "white" }}
+              >
+                Login
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                <MenuItem onClick={handleClose}>User</MenuItem>
+                <MenuItem onClick={handleClose}>Trainer</MenuItem>
+              </Menu>
+            </div>
+          )}
+        </Toolbar>
       </Container>
-    </nav>
+    </AppBar>
   );
-};
+}
 
-const styles = css`
-  width: 100%;
-  height:100px
-  position: absolute;
-  top: 0;
-  z-index: 10;
-  padding: 40px 0;
-  background-color: black;
-  .container {
-    max-width: 1200px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .logo {
-      cursor: pointer;
-    }
-    #burgerMenu {
-      cursor: pointer;
-      display: none;
-      color: #fff;
-    }
-  }
-  @media (max-width: 1200px) {
-    .container {
-      max-width: 1200px;
-      button {
-        display: none;
-      }
-      #burgerMenu {
-        display: block;
-      }
-    }
-  }
-`;
-
-export default Navbar;
+export default ResponsiveAppBar;

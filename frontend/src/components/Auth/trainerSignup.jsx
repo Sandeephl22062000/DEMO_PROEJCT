@@ -51,20 +51,17 @@ const Signup = () => {
     validationSchema: trainerValidationSchema,
     onSubmit: (values, { resetForm }) => {
       console.log(values);
-
+      console.log(images);
       const sendData = async () => {
-        const postData = await axios.post(
-          "http://localhost:3000/api/trainer",
-          {
-            name: values.fullName,
-            email: values.email,
-            password: values.password,
-            photo: images,
-            specialization: values.specialization,
-            experiences: values.experience,
-          }
-        );
-        resetForm();
+       await axios.post("http://localhost:8000/api/trainer", {
+          name: values.fullName,
+          email: values.email,
+          password: values.password,
+          photo: images,
+          specialization: values.specialization,
+          experiences: values.experience,
+        });
+        // resetForm();
       };
       sendData();
     },
@@ -94,7 +91,7 @@ const Signup = () => {
           }}
         >
           <Button onClick={Userhandler}>User</Button>
-          <Button onClick={TrainerHandler}>Trainer</Button>
+          {/* <Button onClick={TrainerHandler}>Trainer</Button> */}
         </div>
         <form
           onSubmit={formik.handleSubmit}

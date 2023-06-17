@@ -52,7 +52,15 @@ const getAllUser = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  res.status(201).json({
+    message: "Succes",
+    data: user,
+  });
+};
 const loginUser = async (req, res, next) => {
+  console.log("im here");
   let email = req.body.email;
   let password = req.body.password;
   if (!email || !password) {
@@ -71,7 +79,7 @@ const loginUser = async (req, res, next) => {
   if (UserInfo) {
     res.json({
       message: "Successfully login",
-      data: { name: UserInfo.name, email: UserInfo.email },
+      data: UserInfo._id,
       token,
     });
   } else {
@@ -103,4 +111,5 @@ module.exports = {
   getAllUser,
   loginUser,
   updatePassword,
+  getUserById,
 };

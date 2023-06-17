@@ -149,7 +149,7 @@ const SearchInput = () => {
                   <CardMedia
                     component="img"
                     height="194"
-                    image="/static/images/cards/paella.jpg"
+                    image={trainer.photo}
                     alt="Paella dish"
                   />
                   <CardContent>
@@ -167,7 +167,7 @@ const SearchInput = () => {
                       <ShareIcon />
                     </IconButton>
                     <a href={`/trainer/${trainer._id}`}>
-                      <Button >View Profile</Button>
+                      <Button>View Profile</Button>
                     </a>
                   </CardActions>
                 </Card>

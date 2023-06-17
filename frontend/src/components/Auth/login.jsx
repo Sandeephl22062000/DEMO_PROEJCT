@@ -1,13 +1,20 @@
 import { useFormik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import React from "react";
+import client from "../../features/client";
 import validationSchema from "../schema/schema";
-import { Button, Container, TextField } from "@mui/material";
+import { Box, Button, Container, TextField } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { UserByID, loginUser } from "../../store/user";
+import { useToasts } from "react-toast-notifications";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { addToast } = useToasts();
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -20,35 +27,22 @@ const Login = () => {
       password: Yup.string().min(6).required("Password is required"),
     }),
     onSubmit: (values, { resetForm }) => {
-      console.log("wqwqwq");
-      console.log(values.email, values.password);
-
-      const sendData = async () => {
-        const response = await axios.post(
-          "http://localhost:3000/api/users/login",
-          {
-            email: values.email,
-            password: values.password,
-          }
-        );
-        const userInfo = response.data;
-        console.log(userInfo)
-        localStorage.setItem("UserInfo",JSON.stringify({
-          email:userInfo.data.name,
-          name:userInfo.data.email,
-          token:userInfo.token
-        }))
-        const user = localStorage.getItem("UserInfo")
-        console.log(user)
-        navigate("/")
-        resetForm();
-      };
-      sendData();
+      dispatch(
+        loginUser({ email: values.email, password: values.password, addToast })
+      );
+      const user = JSON.parse(localStorage.getItem("UserInfo"));
+      if (user) {
+        console.log("vnsrsrdvbk");
+        dispatch(UserByID(user?.data));
+      }
     },
   });
+
+  const trainerLogin = () => {
+    navigate("/trainerlogin");
+  };
   return (
     <>
-      <h3 style={{ textAlign: "center", marginTop: "50px" }}>LOGIN</h3>
       <Container
         sx={{
           display: "flex",
@@ -60,8 +54,10 @@ const Login = () => {
           marginTop: "40px",
           marginBottom: "50px",
           padding: "20px",
+          background: "#B8B8B7",
         }}
       >
+        <h3 style={{ textAlign: "center", marginTop: "50px" }}>LOGIN</h3>
         <form
           onSubmit={formik.handleSubmit}
           autoComplete="off"
@@ -85,7 +81,17 @@ const Login = () => {
             id="outlined-required"
             name="password"
             value={formik.values.password}
-            label="password"
+            label={
+              <span
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                  marginBottom: "2px",
+                }}
+              >
+                password
+              </span>
+            }
             type="password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -93,21 +99,22 @@ const Login = () => {
             helperText={formik.touched.password && formik.errors.password}
             sx={{ width: "100%", margin: "10px" }}
           />
-
-          <Button
-            type="submit"
-            sx={{
-              color: "white",
-              backgroundColor: "red",
-              width: "130px",
-              height: "50px",
-              fontSize: "19px",
-              margin: "10px",
-              justifyContent: "center",
-            }}
-          >
-            Submit
-          </Button>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              type="submit"
+              sx={{
+                color: "white",
+                backgroundColor: "red",
+                width: "130px",
+                height: "50px",
+                fontSize: "19px",
+                margin: "10px",
+                justifyContent: "center",
+              }}
+            >
+              Submit
+            </Button>
+          </Box>
         </form>
       </Container>
     </>
