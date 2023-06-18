@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import React from "react";
 import client from "../../features/client";
 import validationSchema from "../schema/schema";
-import { Box, Button, Container, TextField } from "@mui/material";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -15,6 +15,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const { addToast } = useToasts();
 
+  const handleForgotPassword = () => {};
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -54,7 +55,6 @@ const Login = () => {
           marginTop: "40px",
           marginBottom: "50px",
           padding: "20px",
-          background: "#B8B8B7",
         }}
       >
         <h3 style={{ textAlign: "center", marginTop: "50px" }}>LOGIN</h3>
@@ -81,17 +81,7 @@ const Login = () => {
             id="outlined-required"
             name="password"
             value={formik.values.password}
-            label={
-              <span
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  marginBottom: "2px",
-                }}
-              >
-                password
-              </span>
-            }
+            label="password"
             type="password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -99,7 +89,7 @@ const Login = () => {
             helperText={formik.touched.password && formik.errors.password}
             sx={{ width: "100%", margin: "10px" }}
           />
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <Button
               type="submit"
               sx={{
@@ -114,7 +104,17 @@ const Login = () => {
             >
               Submit
             </Button>
-          </Box>
+            <Box
+              onClick={handleForgotPassword}
+              sx={{
+                display: { xs: "none", md: "flex" },
+                cursor: "pointer",
+                marginLeft: "auto", // Adjust the margin as needed
+              }}
+            >
+              <Typography>Forgot Password?</Typography>
+            </Box>
+          </Box>{" "}
         </form>
       </Container>
     </>

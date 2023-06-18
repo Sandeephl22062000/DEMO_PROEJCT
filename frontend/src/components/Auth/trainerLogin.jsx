@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import React, { useState } from "react";
-import { Alert, Button, Container, TextField } from "@mui/material";
+import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import TransitionAlerts from "../TransitionAlerts";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,9 @@ const TrainerLogin = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const handleForgotPassword =() =>{
+
+  }
   const TrainerValidationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address")
@@ -130,18 +133,32 @@ const TrainerLogin = () => {
             sx={{ width: "100%", margin: "8px" }}
           />
 
-          <Button
-            type="submit"
-            sx={{
-              color: "white",
-              backgroundColor: "red",
-              width: "155px",
-              height: "63px",
-              fontSize: "19px",
-            }}
-          >
-            Submit
-          </Button>
+<Box sx={{ display: "flex", alignItems: "center" }}>
+            <Button
+              type="submit"
+              sx={{
+                color: "white",
+                backgroundColor: "red",
+                width: "130px",
+                height: "50px",
+                fontSize: "19px",
+                margin: "10px",
+                justifyContent: "center",
+              }}
+            >
+              Submit
+            </Button>
+            <Box
+              onClick={handleForgotPassword}
+              sx={{
+                display: { xs: "none", md: "flex" },
+                cursor: "pointer",
+                marginLeft: "auto", // Adjust the margin as needed
+              }}
+            >
+              <Typography>Forgot Password?</Typography>
+            </Box>
+          </Box>
         </form>
       </Container>
     </>

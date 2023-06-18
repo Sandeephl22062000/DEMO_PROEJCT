@@ -14,7 +14,7 @@ import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import ResultPage from "./ResultPage";
+// import ResultPage from "./ResultPage";
 
 const UserInput = () => {
   const [age, setAge] = useState("");

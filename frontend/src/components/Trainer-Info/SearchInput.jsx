@@ -34,7 +34,7 @@ const SearchInput = () => {
         return;
       }
       const { data } = await axios.get(
-        `http://localhost:3000/api/trainer/${search}`
+        `http://localhost:8000/api/trainer/${search}`
       );
       console.log(data.data);
       setLoading(false);
@@ -45,7 +45,7 @@ const SearchInput = () => {
   };
 
   const getTrainerDetail = async () => {
-    const { data } = await axios.get(`http://localhost:3000/api/trainer`);
+    const { data } = await axios.get(`http://localhost:8000/api/trainer`);
     console.log(data.data);
     setTrainer(data.data);
   };

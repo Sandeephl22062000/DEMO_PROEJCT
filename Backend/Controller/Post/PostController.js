@@ -29,6 +29,7 @@ exports.newPost = catchAsync(async (req, res, next) => {
   }
 });
 
+
 // Like or Unlike Post
 exports.likeUnlikePost = catchAsync(async (req, res, next) => {
   const post = await Post.findById(req.params.id);
@@ -141,7 +142,7 @@ exports.newLike = catchAsync(async (req, res, next) => {
   if (!post) {
     return next(new ErrorHandler("Post Not Found", 404));
   }
-  console.log(post.likes);
+  console.log("post.likes",post.likes);
   console.log(post.likes.includes(req.user._id));
   if (post.likes.includes(req.user._id)) {
     return next(new ErrorHandler("Already Liked", 500));
@@ -268,3 +269,5 @@ exports.allPosts = catchAsync(async (req, res, next) => {
     posts,
   });
 });
+
+

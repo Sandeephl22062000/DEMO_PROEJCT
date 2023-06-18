@@ -28,20 +28,42 @@ const settings = ["logout"];
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElRegister, setAnchorElRegister] = React.useState(null);
+  const [anchorElLogin, setAnchorElLogin] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const navigate = useNavigate()
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleClickRegister = (event) => {
+    setAnchorElRegister(event.currentTarget);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
+
+  const handleClickLogin = (event) => {
+    setAnchorElLogin(event.currentTarget);
+  };
+  const handleUserSign = () => {
+    navigate("/signup")
+    setAnchorElRegister(null);
+  };
+  
+  const handleTrainerSignup = () => {
+    navigate("/trainersignup")
+    setAnchorElRegister(null);
+  };
+
+  const handleUserLogin = () => {
+    navigate("/login")
+    setAnchorElLogin(null);
+  };
+
+  const handleTrainerLogin = () => {
+    navigate("/trainerlogin")
+    setAnchorElLogin(null);
   };
 
   const user = useSelector((state) => state.user.user);
   console.log(user);
   const trainer = useSelector((state) => state.trainer.trainer);
   console.log(trainer);
-  const navigate = useNavigate();
 
   console.log("trainer", Object.keys(trainer).length === 0);
 
@@ -193,48 +215,48 @@ function ResponsiveAppBar() {
           ) : (
             <div>
               <Button
-                id="basic-button"
-                aria-controls={open ? "basic-menu" : undefined}
+                id="register-button"
+                aria-controls={open ? "register-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
+                onClick={handleClickRegister}
                 sx={{ color: "white" }}
               >
                 Register
               </Button>
               <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
+                id="register-menu"
+                anchorEl={anchorElRegister}
+                open={Boolean(anchorElRegister)}
+                onClose={()=>(setAnchorElRegister(null))}
                 MenuListProps={{
-                  "aria-labelledby": "basic-button",
+                  "aria-labelledby": "register-button",
                 }}
               >
-                <MenuItem onClick={handleClose}>User</MenuItem>
-                <MenuItem onClick={handleClose}>Trainer</MenuItem>
+                <MenuItem onClick={handleUserSign}>User</MenuItem>
+                <MenuItem onClick={handleTrainerSignup}>Trainer</MenuItem>
               </Menu>
               <Button
-                id="basic-button"
-                aria-controls={open ? "basic-menu" : undefined}
+                id="login-button"
+                aria-controls={open ? "login-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
+                onClick={handleClickLogin}
                 sx={{ color: "white" }}
               >
                 Login
               </Button>
               <Menu
                 id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
+                anchorEl={anchorElLogin}
+                open={Boolean(anchorElLogin)}
+                onClose={()=>{setAnchorElLogin(null)}}
                 MenuListProps={{
-                  "aria-labelledby": "basic-button",
+                  "aria-labelledby": "login-button",
                 }}
               >
-                <MenuItem onClick={handleClose}>User</MenuItem>
-                <MenuItem onClick={handleClose}>Trainer</MenuItem>
+                <MenuItem onClick={handleUserLogin}>User</MenuItem>
+                <MenuItem onClick={handleTrainerLogin}>Trainer</MenuItem>
               </Menu>
             </div>
           )}

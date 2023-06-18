@@ -14,7 +14,7 @@ const AuthController = require("../Controller/AuthController");
 const CommentController = require("../Controller/Post/CommentPost");
 const PostController = require("../Controller/Post/PostController.js");
 const { protectingRoutes } = require("../Controller/AuthController");
-
+  
 const router = express();
 
 router

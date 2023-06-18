@@ -16,7 +16,7 @@ export default function BasicSelect() {
   const navigate = useNavigate();
   const clickHandler = async () => {
     const { data } = await axios.get(
-      `http://localhost:3000/api/exercise/sortedExercises?muscle=${muscle}&difficulty=${difficulty}`
+      `http://localhost:8000/api/exercise/sortedExercises?muscle=${muscle}&difficulty=${difficulty}`
     );
 
     // console.log(`https://www.youtube.com/watch?v=${videoId}`)
@@ -27,7 +27,7 @@ export default function BasicSelect() {
     navigate(`/execiseVideos/${exerciseName}/${muscleName}`);
   };
   const fetchData = async () => {
-    const { data } = await axios.get("http://localhost:3000/api/exercise");
+    const { data } = await axios.get("http://localhost:8000/api/exercise");
     const dataToShow = data.exercises;
 
     setData(dataToShow.slice(0, 4));

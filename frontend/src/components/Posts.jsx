@@ -14,35 +14,57 @@ import Typography from "@mui/joy/Typography";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import ModeCommentOutlined from "@mui/icons-material/ModeCommentOutlined";
 import Face from "@mui/icons-material/Face";
-import { Container } from "@mui/material";
+import { Button, Container } from "@mui/material";
+import { useState, useEffect } from "react";
 
 const Post = (props) => {
-  const [like, AddLike] = React.useState(false);
-  const { token } = JSON.parse(localStorage.getItem("UserInfo"));
-  const getLike = async () => {
-    const data = await axios.post(`api/post/likepost/${props.post._id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    console.log(data);
+  const [liked, setLiked] = useState(false);
+
+  const [likeEffect, setLikeEffect] = useState(false);
+  const localProperty = JSON.parse(localStorage.getItem("UserInfo"));
+  const token = localProperty.token;
+  console.log(localProperty.data);
+  console.log(props)
+  const likes = props.post.likes;
+  console.log("likes",likes)
+  const handleLike = async () => {
+    setLiked(!liked);
+    if (props.post.likes.includes(localProperty.data)) {
+      return;
+    } else {
+      console.log("checking");
+      const data = await axios.post(
+        `/api/post/likepost/${props.post._id}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(localProperty.token);
+    }
   };
-  getLike();
-  const addLike = async () => {
-    const data = await axios.post(`/api/post/likepost/${props.post._id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    console.log(data);
+
+  useEffect(() => {
+    setLiked(likes.some((id) => id === localProperty.data));
+  }, [likes]);
+  const setLike = () => {
+    setLikeEffect(true);
+    setTimeout(() => {
+      setLikeEffect(false);
+    }, 500);
+    if (liked) {
+      return;
+    }
+    handleLike();
   };
-  addLike();
+
   const calculateTime = Math.floor(
     (new Date() - new Date(props.post.createdAt)) / (1000 * 60 * 60 * 24)
   );
-  console.log(props.post);
+  console.log(props.post.likes.length);
   return (
     <Container
       sx={{
@@ -107,10 +129,16 @@ const Post = (props) => {
               variant="plain"
               color="neutral"
               size="sm"
-              onClick={addLike}
+              onClick={handleLike}
             >
-              <FavoriteBorder />
+              <FavoriteBorder /> {likes.length}
             </IconButton>
+
+            <Button onClick={handleLike}>
+              {liked ? "Like" : "Ünlike"}
+            </Button>
+
+            {/* {console.log(likesOnPost.length)} */}
             <IconButton variant="plain" color="neutral" size="sm">
               <ModeCommentOutlined />
             </IconButton>

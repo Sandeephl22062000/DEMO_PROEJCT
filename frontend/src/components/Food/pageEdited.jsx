@@ -17,8 +17,7 @@ import {
 import { useState } from "react";
 
 import Food from "./Food";
-import ResultPage from "./ResultPage";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CalorieDetail = () => {
   const [showTrackPage, setShowTrackPage] = useState(false);
@@ -28,11 +27,13 @@ const CalorieDetail = () => {
   const [protein, setProtein] = useState(0);
   const [carbs, setCarbs] = useState(0);
   const params = useParams();
+  const navigate = useNavigate();
   const maintainceCalory = params.calories;
   useEffect(() => {
     showdetail();
   }, []);
   const showdetail = () => {
+
     if (Goal === "Gain") {
       const calculatedCalories = (Target * 7700) / 7 + maintainceCalory;
       const calculatedCarbs = (maintainceCalory * 0.65) / 4;
@@ -62,6 +63,7 @@ const CalorieDetail = () => {
 
   const clickHandler = () => {
     setShowTrackPage(true);
+    navigate("/calculatediet")
   };
   return (
     <>

@@ -9,10 +9,10 @@ import {
 import storage from "../../utils/firebase";
 import React, { useState } from "react";
 import validationSchema from "../schema/schema";
-import { Box, Button, Container, TextField } from "@mui/material";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import client from "../../features/client";
 import { useToasts } from "react-toast-notifications";
-
+import profileImage from "../../images/Profile.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -84,7 +84,8 @@ const Signup = () => {
           navigate("/login");
           // resetForm();
         } catch (error) {
-          addToast(error, {
+          console.log(error);
+          addToast(error.message, {
             appearance: "error",
             autoDismiss: true,
             autoDismissTimeout: 3000,
@@ -125,6 +126,51 @@ const Signup = () => {
           autoComplete="off"
           style={{ margin: "20px", padding: "10px" }}
         >
+          {!images ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                // width: "400px", 
+                // height: "400px",
+                // borderRadius: "50%", 
+                overflow: "hidden", 
+                margin: "auto",
+              }}
+            >
+              <img src={profileImage} alt="Preview" style={{ width: "50%" }} />
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                // width: "400px", 
+                // height: "400px",
+                // borderRadius: "50%", 
+                overflow: "hidden", 
+                margin: "auto",
+              }}
+            >
+              <img src={images} alt="Preview" style={{ width: "50%" }} />
+            </Box>
+            
+          )}
+          <TextField
+            required
+            id="outlined-required"
+            name="photo"
+            // label="Upload Profile Photo"
+            type="file"
+            onChange={photoupload}
+            onBlur={formik.handleBlur}
+            error={formik.touched.photo && Boolean(formik.errors.photo)}
+            helperText={formik.touched.photo && formik.errors.photo}
+            sx={{ width: "100%", margin: "8px" }}
+          />
+
           <TextField
             required
             id="outlined-required"
@@ -182,31 +228,21 @@ const Signup = () => {
             }
             sx={{ width: "100%", margin: "8px" }}
           />
-          <TextField
-            required
-            id="outlined-required"
-            name="photo"
-            abel="Upload Profile Photo"
-            type="file"
-            onChange={photoupload}
-            onBlur={formik.handleBlur}
-            error={formik.touched.photo && Boolean(formik.errors.photo)}
-            helperText={formik.touched.photo && formik.errors.photo}
-            sx={{ width: "100%", margin: "8px" }}
-          />
-           <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Button
-            type="submit"
-            sx={{
-              color: "white",
-              backgroundColor: "red",
-              width: "155px",
-              height: "63px",
-              fontSize: "19px",
-            }}
-          >
-            Submit
-          </Button>
+
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              type="submit"
+              sx={{
+                color: "white",
+                backgroundColor: "red",
+                width: "155px",
+                height: "63px",
+                fontSize: "19px",
+              }}
+            >
+              Submit
+            </Button>
+           
           </Box>
         </form>
       </Container>

@@ -16,10 +16,10 @@ import CalorieDetail from "./components/Food/pageEdited";
 import Trainerlogin from "./components/Auth/trainerLogin";
 import TrainerSigup from "./components/Auth/trainerSignup";
 import Inbox from "./components/Chat/chat.jsx";
-import ResultPage from "./components/Food/ResultPage";
-import Profilejk from "./components/Profilejk.jsx";
 import ClientsExperince from "./ClientsExperince";
 import ShowPost from "./components/ShowPost";
+import ChatInterface from "./components/Chat/chat.jsx";
+import ExeprmientFoodApi from "./components/Food/ExeprmientFoodApi";
 const App = () => {
   return (
     <div>
@@ -32,15 +32,16 @@ const App = () => {
           <Route path="/trainersignup" element={<TrainerSigup />} />
           <Route path="/trainerlogin" element={<Trainerlogin />} />
 
-          <Route path="/usersdetail" element={<UserInput />} />
+          <Route path="/food" element={<UserInput />} />
           <Route path="/food/:calories" element={<CalorieDetail />} />
+          <Route path="/calculatediet" element={<ExeprmientFoodApi />} />
+
 
           <Route path="/trainer" element={<TrainerCards />} />
           <Route path="/trainer/:id" element={<TrainerProfile />} />
 
           <Route path="/exercise" element={<Exercises />} />
-          <Route path="/profile" element={<Profilejk />} />
-
+          <Route path="/chat" element={<ChatInterface/>}/>
           <Route path="/clientexperiences" element={<ClientsExperince />} />
 
           <Route
