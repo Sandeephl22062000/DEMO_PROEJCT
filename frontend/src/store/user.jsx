@@ -38,8 +38,10 @@ export const loginUser = createAsyncThunk(
 );
 export const UserByID = createAsyncThunk("/user/userDetail", async (id) => {
   console.log(id);
-  const postData = await axios.get(`http://localhost:8000/api/users/${id}`);
-  console.log(postData.data.data);
+  const { data } = JSON.parse(localStorage.getItem("UserInfo"));
+  console.log(data);
+  const postData = await axios.get(`http://localhost:8000/api/users/${data}`);
+  console.log(postData.data);
   return postData.data.data;
 });
 

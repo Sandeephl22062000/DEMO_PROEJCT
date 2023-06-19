@@ -31,7 +31,7 @@ function ResponsiveAppBar() {
   const [anchorElRegister, setAnchorElRegister] = React.useState(null);
   const [anchorElLogin, setAnchorElLogin] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const open = Boolean(anchorEl);
   const handleClickRegister = (event) => {
     setAnchorElRegister(event.currentTarget);
@@ -41,22 +41,22 @@ function ResponsiveAppBar() {
     setAnchorElLogin(event.currentTarget);
   };
   const handleUserSign = () => {
-    navigate("/signup")
+    navigate("/signup");
     setAnchorElRegister(null);
   };
-  
+
   const handleTrainerSignup = () => {
-    navigate("/trainersignup")
+    navigate("/trainersignup");
     setAnchorElRegister(null);
   };
 
   const handleUserLogin = () => {
-    navigate("/login")
+    navigate("/login");
     setAnchorElLogin(null);
   };
 
   const handleTrainerLogin = () => {
-    navigate("/trainerlogin")
+    navigate("/trainerlogin");
     setAnchorElLogin(null);
   };
 
@@ -83,9 +83,7 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
   const handleLogout = () => {
-    user.userInfo
-      ? localStorage.clear("UserInfo")
-      : localStorage.removeItem("TrainerIndo");
+    localStorage.removeItem("UserInfo");
   };
   return (
     <AppBar position="static" sx={{ background: "black" }}>
@@ -228,7 +226,7 @@ function ResponsiveAppBar() {
                 id="register-menu"
                 anchorEl={anchorElRegister}
                 open={Boolean(anchorElRegister)}
-                onClose={()=>(setAnchorElRegister(null))}
+                onClose={() => setAnchorElRegister(null)}
                 MenuListProps={{
                   "aria-labelledby": "register-button",
                 }}
@@ -250,7 +248,9 @@ function ResponsiveAppBar() {
                 id="basic-menu"
                 anchorEl={anchorElLogin}
                 open={Boolean(anchorElLogin)}
-                onClose={()=>{setAnchorElLogin(null)}}
+                onClose={() => {
+                  setAnchorElLogin(null);
+                }}
                 MenuListProps={{
                   "aria-labelledby": "login-button",
                 }}

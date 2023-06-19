@@ -4,6 +4,7 @@ const User = require("../Model/UserModel");
 const AppError = require("../Error-Handling/error");
 const protectingRoutes = catchAsync(async (req, res, next) => {
   const token = req.headers.authorization.split(" ");
+  console.log("token", token);
   const jwtToken = token[1].toString();
   if (
     req.headers.authorization &&

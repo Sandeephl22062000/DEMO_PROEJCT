@@ -29,12 +29,19 @@ const UserSchema = mongoose.Schema(
     photo: {
       type: String,
     },
+    role: { type: Number, default: 0 },
     posts: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
       },
     ],
+    specialization: {
+      type: String,
+    },
+    experiences: {
+      type: String,
+    },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
@@ -50,7 +57,6 @@ const UserSchema = mongoose.Schema(
 
 // UserSchema.pre("save", async function (next) {
 //   this.password = await bcrypt.hash(this.password, 12);
-//   this.confirmPassword = undefined;
 //   console.log(this.password);
 //   next();
 // });

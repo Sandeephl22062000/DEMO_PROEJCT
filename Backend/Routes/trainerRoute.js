@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const TrainerController = require("../Controller/TrainerController/trainerController");
 
-router.route("/").post(TrainerController.RegisterTrainer);
-router.route("/login").post(TrainerController.loginTrainer);
+// router.route("/").post(TrainerController.RegisterTrainer);
+// router.route("/login").post(TrainerController.loginTrainer);
 
 // router.route("/login").post(TrainerController.loginRegister);
 router.route("/:trainer").get(TrainerController.getAlltrainer);

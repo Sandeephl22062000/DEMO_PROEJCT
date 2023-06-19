@@ -73,6 +73,7 @@ const Signup = () => {
               email: values.email,
               password: values.password,
               photo: images,
+              role: 0,
             }
           );
           console.log(response.data);
@@ -132,10 +133,10 @@ const Signup = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                // width: "400px", 
+                // width: "400px",
                 // height: "400px",
-                // borderRadius: "50%", 
-                overflow: "hidden", 
+                // borderRadius: "50%",
+                overflow: "hidden",
                 margin: "auto",
               }}
             >
@@ -147,16 +148,15 @@ const Signup = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                // width: "400px", 
+                // width: "400px",
                 // height: "400px",
-                // borderRadius: "50%", 
-                overflow: "hidden", 
+                // borderRadius: "50%",
+                overflow: "hidden",
                 margin: "auto",
               }}
             >
               <img src={images} alt="Preview" style={{ width: "50%" }} />
             </Box>
-            
           )}
           <TextField
             required
@@ -242,7 +242,6 @@ const Signup = () => {
             >
               Submit
             </Button>
-           
           </Box>
         </form>
       </Container>

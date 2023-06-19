@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 const registerUser = catchAync(async (req, res, next) => {
-  const { email, password, name } = req.body;
+  const { email, password, name, specialization, experiences, role } = req.body;
   console.log(req.body);
   if (!email || !password || !name) {
     return next(new AppError("Provide All the Requied Details", 401));
@@ -22,11 +22,16 @@ const registerUser = catchAync(async (req, res, next) => {
   const userFind = await User.findOne({ email });
   if (userFind) return next(new AppError("This Email is Already registered"));
 
+  const HashedPassword = await bcrypt.hash(password, 12);
+  console.log(HashedPassword);
   const user = await User.create({
     name,
     email,
-    password,
+    password: HashedPassword,
     photo: req.body.filename,
+    role,
+    specialization,
+    experiences,
   });
 
   if (user) {

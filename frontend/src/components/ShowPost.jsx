@@ -5,16 +5,16 @@ import Posts from "./Posts";
 import axios from "axios";
 const ShowPost = () => {
   const [posts, setPosts] = useState([]);
-  const addPost = () => {
+  const getPost = () => {
     const data = async () => {
-      const response = await axios.get("api/post/posts/all");
+      const response = await axios.get("http://localhost:8000/api/post/posts/all");
       console.log(response.data.posts);
       setPosts(response.data.posts);
     };
     data();
   };
   useEffect(() => {
-    addPost();
+    getPost();
   }, []);
   return (
     <Container>

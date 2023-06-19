@@ -43,11 +43,11 @@ const SearchInput = () => {
       throw new Error(error);
     }
   };
-
+  console.log(searchResult);
   const getTrainerDetail = async () => {
     const { data } = await axios.get(`http://localhost:8000/api/trainer`);
     console.log(data.data);
-    setTrainer(data.data);
+    setSearchResult(data.data);
   };
 
   useEffect(() => {
@@ -118,16 +118,12 @@ const SearchInput = () => {
               padding: "10px",
             }}
           >
-            {/* <Grid
-              container
-              spacing={4}
-              sx={{ display: "flex", justifyContent: "center" }}
-            > */}
             <Box
               sx={{
                 display: "grid",
                 gridTemplateColumns: "repeat(3, 1fr)",
                 justifyContent: "flex-end",
+                gap: "20px",
               }}
             >
               {searchResult.map((trainer) => (
@@ -137,11 +133,6 @@ const SearchInput = () => {
                       <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
                         R
                       </Avatar>
-                    }
-                    action={
-                      <IconButton aria-label="settings">
-                        <MoreVertIcon />
-                      </IconButton>
                     }
                     title={trainer.name}
                     // subheader="September 14, 2016"
@@ -159,15 +150,23 @@ const SearchInput = () => {
                       specification:not created model yet
                     </Typography>
                   </CardContent>
-                  <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites">
-                      <FavoriteIcon />
-                    </IconButton>
-                    <IconButton aria-label="share">
-                      <ShareIcon />
-                    </IconButton>
+                  <CardActions
+                    disableSpacing
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
                     <a href={`/trainer/${trainer._id}`}>
-                      <Button>View Profile</Button>
+                      <Button
+                        sx={{
+                          backgroundColor: "black",
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "black",
+                          },
+                          textDecoration: "none !important",
+                        }}
+                      >
+                        View Profile
+                      </Button>
                     </a>
                   </CardActions>
                 </Card>

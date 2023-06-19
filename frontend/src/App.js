@@ -20,6 +20,7 @@ import ClientsExperince from "./ClientsExperince";
 import ShowPost from "./components/ShowPost";
 import ChatInterface from "./components/Chat/chat.jsx";
 import ExeprmientFoodApi from "./components/Food/ExeprmientFoodApi";
+import Profile from "./components/Profilejk";
 const App = () => {
   return (
     <div>
@@ -36,13 +37,14 @@ const App = () => {
           <Route path="/food/:calories" element={<CalorieDetail />} />
           <Route path="/calculatediet" element={<ExeprmientFoodApi />} />
 
-
           <Route path="/trainer" element={<TrainerCards />} />
           <Route path="/trainer/:id" element={<TrainerProfile />} />
 
           <Route path="/exercise" element={<Exercises />} />
-          <Route path="/chat" element={<ChatInterface/>}/>
+          <Route path="/chat" element={<ChatInterface />} />
           <Route path="/clientexperiences" element={<ClientsExperince />} />
+
+          <Route path="/profile" element={<Profile />} />
 
           <Route
             path="/execiseVideos/:muscle/:exercise"

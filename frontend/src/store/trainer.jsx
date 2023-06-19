@@ -11,7 +11,7 @@ export const loginTrainer = createAsyncThunk(
   "/trainer/loginTrainer",
   async ({ email, password }) => {
     const postData = await axios.post(
-      "http://localhost:8000/api/trainer/login",
+      "http://localhost:8000/api/users/login",
       {
         email,
         password,

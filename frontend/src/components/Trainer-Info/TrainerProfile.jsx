@@ -15,7 +15,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
-import Post from "./Post";
+import Post from "./ProfilePost";
 import axios from "axios";
 const handleCommentButtonClick = () => {};
 const style = {
@@ -26,6 +26,7 @@ const style = {
 
 const ProfilePage = () => {
   const [trainer, setTrainer] = useState("");
+  const [post, showPost] = useState([]);
   const params = useParams();
   const id = params.id;
   useEffect(() => {
@@ -33,19 +34,21 @@ const ProfilePage = () => {
       const { data } = await axios.get(`/api/trainer/trainerDetail/${id}`);
       console.log(data.data);
       setTrainer(data.data);
+      console.log(data.data.posts);
+      showPost(data.data.posts);
     };
     trainerDetail();
   }, []);
   return (
     <Container
       sx={{
-        minHeight: "100rem",
+        minHeight: "80vh",
         marginTop: "2rem",
         width: "70rem",
       }}
     >
       <Grid container sx={{ height: "200px" }}>
-        <Grid item xs={3}>
+        <Grid item xs={3.1}>
           <Card
             sx={{
               height: "100%",
@@ -63,7 +66,7 @@ const ProfilePage = () => {
             />
           </Card>
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={8.7} sx={{ marginLeft: "15px" }}>
           <Card
             sx={{
               height: "100%",
@@ -114,33 +117,53 @@ const ProfilePage = () => {
               color: "black",
             }}
           >
-            <Button>View Post</Button>
-            <Button>Clients Experience</Button>
+            {/* <Button
+              onClick={() => {
+                setClientExperience(false);
+              }}
+            >
+              View Post
+            </Button>
+            <Button
+              onClick={() => {
+                setClientExperience(true);
+              }}
+            >
+              Clients Experience
+            </Button> */}
           </Box>
 
           <Card
             sx={{
-              height: "100%",
+              height: "50vh",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                justifyContent: "flex-end",
-                gap: "16px",
-                margin: "4px",
-              }}
-            >
-              <Post />
-              <Post />
-              <Post />
-              <Post />
-            </Box>
+            {console.log(post.length)}
+            {post.length === 0 ? (
+              <Box>
+                <Typography sx={{ fontSize: "35px", height: "100%" }}>
+                  <div>
+                    <b>No Photo posted yet</b>
+                  </div>
+                </Typography>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                  justifyContent: "flex-end",
+                  gap: "16px",
+                  margin: "4px",
+                }}
+              >
+                post.map((post) => <Post post={post} />)
+              </Box>
+            )}
           </Card>
         </Grid>
       </Grid>

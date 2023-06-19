@@ -7,12 +7,14 @@ import {
 import storage from "../../utils/firebase";
 import React, { useState } from "react";
 import trainerValidationSchema from "../schema/trainerSchema";
-import { Button, Container, TextField } from "@mui/material";
+import { Box, Button, Container, TextField } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const Signup = () => {
+import profileImage from "../../images/Profile.png";
+import Signup from "./signup";
+const TrainerSignup = () => {
   const [images, setImages] = useState("");
-  const [role, setRole] = useState("");
+
   const navigate = useNavigate();
   const photoupload = (event) => {
     let file = event.target.files[0];
@@ -53,11 +55,12 @@ const Signup = () => {
       console.log(values);
       console.log(images);
       const sendData = async () => {
-       await axios.post("http://localhost:8000/api/trainer", {
+        await axios.post("http://localhost:8000/api/users/register", {
           name: values.fullName,
           email: values.email,
           password: values.password,
           photo: images,
+          role: 1,
           specialization: values.specialization,
           experiences: values.experience,
         });
@@ -82,22 +85,54 @@ const Signup = () => {
           padding: "20px",
         }}
       >
-        <div
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            gap: "16px",
-            marginBottom: "16px",
-          }}
-        >
-          <Button onClick={Userhandler}>User</Button>
-          {/* <Button onClick={TrainerHandler}>Trainer</Button> */}
-        </div>
         <form
           onSubmit={formik.handleSubmit}
           autoComplete="off"
           style={{ margin: "20px", padding: "10px" }}
         >
+          {!images ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                // width: "400px",
+                // height: "400px",
+                // borderRadius: "50%",
+                overflow: "hidden",
+                margin: "auto",
+              }}
+            >
+              <img src={profileImage} alt="Preview" style={{ width: "50%" }} />
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                // width: "400px",
+                // height: "400px",
+                // borderRadius: "50%",
+                overflow: "hidden",
+                margin: "auto",
+              }}
+            >
+              <img src={images} alt="Preview" style={{ width: "50%" }} />
+            </Box>
+          )}
+          <TextField
+            required
+            id="outlined-required"
+            name="photo"
+            abel="Upload Profile Photo"
+            type="file"
+            onChange={photoupload}
+            onBlur={formik.handleBlur}
+            error={formik.touched.photo && Boolean(formik.errors.photo)}
+            helperText={formik.touched.photo && formik.errors.photo}
+            sx={{ width: "100%", margin: "8px" }}
+          />
           <TextField
             required
             id="outlined-required"
@@ -155,6 +190,7 @@ const Signup = () => {
             }
             sx={{ width: "100%", margin: "8px" }}
           />
+
           <TextField
             required
             id="outlined-required"
@@ -173,18 +209,7 @@ const Signup = () => {
             }
             sx={{ width: "100%", margin: "8px" }}
           />
-          <TextField
-            required
-            id="outlined-required"
-            name="photo"
-            abel="Upload Profile Photo"
-            type="file"
-            onChange={photoupload}
-            onBlur={formik.handleBlur}
-            error={formik.touched.photo && Boolean(formik.errors.photo)}
-            helperText={formik.touched.photo && formik.errors.photo}
-            sx={{ width: "100%", margin: "8px" }}
-          />
+
           <TextField
             required
             id="outlined-required"
@@ -202,6 +227,7 @@ const Signup = () => {
             helperText={formik.touched.experience && formik.errors.experience}
             sx={{ width: "100%", margin: "8px" }}
           />
+
           <Button
             type="submit"
             sx={{
@@ -219,4 +245,4 @@ const Signup = () => {
     </>
   );
 };
-export default Signup;
+export default TrainerSignup;

@@ -14,57 +14,56 @@ import Typography from "@mui/joy/Typography";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import ModeCommentOutlined from "@mui/icons-material/ModeCommentOutlined";
 import Face from "@mui/icons-material/Face";
-import { Button, Container } from "@mui/material";
-import { useState, useEffect } from "react";
+import { Container, Button } from "@mui/material";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const Post = (props) => {
-  const [liked, setLiked] = useState(false);
+  const [like, AddLike] = React.useState(false);
+  const [comment, setComment] = useState("");
+  const [showComment, setShowComment] = useState([]);
+  const { token } = JSON.parse(localStorage.getItem("UserInfo"));
 
-  const [likeEffect, setLikeEffect] = useState(false);
-  const localProperty = JSON.parse(localStorage.getItem("UserInfo"));
-  const token = localProperty.token;
-  console.log(localProperty.data);
-  console.log(props)
-  const likes = props.post.likes;
-  console.log("likes",likes)
-  const handleLike = async () => {
-    setLiked(!liked);
-    if (props.post.likes.includes(localProperty.data)) {
-      return;
-    } else {
-      console.log("checking");
-      const data = await axios.post(
-        `/api/post/likepost/${props.post._id}`,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(localProperty.token);
-    }
+  const addLike = async () => {
+    const data = await axios.post(
+      `/api/post/likepost/${props.post._id}`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(data);
   };
 
-  useEffect(() => {
-    setLiked(likes.some((id) => id === localProperty.data));
-  }, [likes]);
-  const setLike = () => {
-    setLikeEffect(true);
-    setTimeout(() => {
-      setLikeEffect(false);
-    }, 500);
-    if (liked) {
-      return;
-    }
-    handleLike();
+  // const getComments = () =>{
+  //   const data = await axios.get()
+  // }
+  const addCommentHandler = async (e) => {
+    e.preventDefault();
+    const { data } = await axios.post(
+      `/api/post/commentpost/${props.post._id}`,
+      {
+        comment,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(data.success.comments[0]);
   };
-
   const calculateTime = Math.floor(
     (new Date() - new Date(props.post.createdAt)) / (1000 * 60 * 60 * 24)
   );
-  console.log(props.post.likes.length);
+  useEffect(() => {
+    setShowComment(props.post.comments);
+  }, []);
+  console.log(props.post);
   return (
     <Container
       sx={{
@@ -129,31 +128,18 @@ const Post = (props) => {
               variant="plain"
               color="neutral"
               size="sm"
-              onClick={handleLike}
+              onClick={addLike}
             >
-              <FavoriteBorder /> {likes.length}
+              <FavoriteBorder />
             </IconButton>
-
-            <Button onClick={handleLike}>
-              {liked ? "Like" : "Ünlike"}
-            </Button>
-
-            {/* {console.log(likesOnPost.length)} */}
+            {props.post.likes.length}
             <IconButton variant="plain" color="neutral" size="sm">
               <ModeCommentOutlined />
+              {props.post.comments.length}
             </IconButton>
           </Box>
         </CardContent>
         <CardContent>
-          <Link
-            component="button"
-            underline="none"
-            fontSize="sm"
-            fontWeight="lg"
-            textColor="text.primary"
-          >
-            8.1M Likes
-          </Link>
           <Typography fontSize="sm">
             <Link
               component="button"
@@ -165,15 +151,16 @@ const Post = (props) => {
             </Link>{" "}
             {props.post?.caption}
           </Typography>
-          <Link
-            component="button"
-            underline="none"
-            fontSize="sm"
-            startDecorator="…"
-            sx={{ color: "text.tertiary" }}
-          >
-            more
-          </Link>
+          {console.log(showComment)}
+          {showComment
+            .slice()
+            .reverse()
+            .map((comment) => (
+              <Typography>
+                {comment.user.name} {comment.comment}
+              </Typography>
+            ))}
+            
           <Link
             component="button"
             underline="none"
@@ -206,15 +193,19 @@ const Post = (props) => {
           <IconButton size="sm" variant="plain" color="neutral" sx={{ ml: -1 }}>
             <Face />
           </IconButton>
-          <Input
-            variant="plain"
-            size="sm"
-            placeholder="Add a comment…"
-            sx={{ flexGrow: 1, mr: 1, "--Input-focusedThickness": "0px" }}
-          />
-          <Link disabled underline="none" role="button">
-            Post
-          </Link>
+          <form onSubmit={addCommentHandler}>
+            <Input
+              variant="plain"
+              size="sm"
+              placeholder="Add a comment…"
+              sx={{ flexGrow: 1, mr: 1, "--Input-focusedThickness": "0px" }}
+              onChange={(e) => {
+                setComment(e.target.value);
+              }}
+            />
+
+            <Button type="submit"> Post</Button>
+          </form>
         </CardOverflow>
       </Card>
     </Container>

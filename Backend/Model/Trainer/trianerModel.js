@@ -29,17 +29,11 @@ const TrainerSchema = mongoose.Schema(
     photo: {
       type: String,
     },
-    likeQuantity: { type: Number },
 
     // Achievements: {
     //   type: String,
     // },
-    specialization: {
-      type: String,
-    },
-    experiences: {
-      type: String,
-    },
+ 
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
@@ -58,22 +52,6 @@ TrainerSchema.pre("save", async function (next) {
   this.confirmPassword = undefined;
   console.log(this.password);
   next();
-});
-
-TrainerSchema.virtual("comments", {
-  ref: "Comment",
-  localField: "_id",
-  foreignField: "trainerID",
-});
-TrainerSchema.virtual("likes", {
-  ref: "Like",
-  localField: "_id",
-  foreignField: "trainerID",
-});
-TrainerSchema.virtual("dislikes", {
-  ref: "DisLike",
-  localField: "_id",
-  foreignField: "trainerID",
 });
 
 module.exports = mongoose.model("Trainer", TrainerSchema);
