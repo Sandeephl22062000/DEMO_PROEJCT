@@ -9,26 +9,32 @@ const initialUser = {
 
 export const loginUser = createAsyncThunk(
   "/user/loginUser",
-  async ({ email, password, addToast }) => {
+  async ({ email, password, addToast, navigate }) => {
     try {
-      const postData = await axios.post(
+      const { data } = await axios.post(
         "http://localhost:8000/api/users/login",
         {
           email,
           password,
         }
       );
-      localStorage.setItem("UserInfo", JSON.stringify(postData.data));
-      console.log("postData", postData.data);
-      addToast(postData.data.message, {
+      const { token } = data;
+      localStorage.setItem("id", data.data);
+      console.log(token);
+      localStorage.setItem("token", token);
+
+      console.log("postData", data);
+      addToast(data.message, {
         appearance: "success",
         autoDismiss: true,
         autoDismissTimeout: 3000,
       });
-      return postData.data;
+      navigate("/");
+      return token;
     } catch (error) {
+      console.log(error.response.data.message);
       // Handle error and show toast if necessary
-      addToast("Login failed", {
+      addToast(error.response.data.message, {
         appearance: "error",
         autoDismiss: true,
         autoDismissTimeout: 3000,
@@ -37,20 +43,23 @@ export const loginUser = createAsyncThunk(
   }
 );
 export const UserByID = createAsyncThunk("/user/userDetail", async (id) => {
-  console.log(id);
-  const { data } = JSON.parse(localStorage.getItem("UserInfo"));
-  console.log(data);
-  const postData = await axios.get(`http://localhost:8000/api/users/${data}`);
+  const postData = await axios.get(`http://localhost:8000/api/users/${id}`);
   console.log(postData.data);
-  return postData.data.data;
+  return postData.data;
 });
 
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    user: initialUser,
+    token: localStorage.getItem("token") || null,
     loading: false,
     error: null,
+  },
+  reducers: {
+    logout: (state) => {
+      state.token = null;
+      localStorage.removeItem("token");
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -80,5 +89,5 @@ const userSlice = createSlice({
       });
   },
 });
-
+export const { logout } = userSlice.actions;
 export default userSlice.reducer;

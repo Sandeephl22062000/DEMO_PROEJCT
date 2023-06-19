@@ -13,7 +13,8 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../store/user";
 
 const pages = [
   "Food",
@@ -32,6 +33,7 @@ function ResponsiveAppBar() {
   const [anchorElLogin, setAnchorElLogin] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const open = Boolean(anchorEl);
   const handleClickRegister = (event) => {
     setAnchorElRegister(event.currentTarget);
@@ -62,10 +64,8 @@ function ResponsiveAppBar() {
 
   const user = useSelector((state) => state.user.user);
   console.log(user);
-  const trainer = useSelector((state) => state.trainer.trainer);
-  console.log(trainer);
-
-  console.log("trainer", Object.keys(trainer).length === 0);
+  const token = useSelector((state) => state.user.token);
+  console.log(token);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -83,7 +83,7 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
   const handleLogout = () => {
-    localStorage.removeItem("UserInfo");
+    dispatch(logout());
   };
   return (
     <AppBar position="static" sx={{ background: "black" }}>
@@ -178,8 +178,7 @@ function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
-          {console.log("user", user)} {console.log("triner", trainer)}
-          {user.userInfo !== null || trainer.trainerInfo !== null ? (
+          {token !== null ? (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

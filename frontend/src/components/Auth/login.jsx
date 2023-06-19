@@ -29,7 +29,12 @@ const Login = () => {
     }),
     onSubmit: (values, { resetForm }) => {
       dispatch(
-        loginUser({ email: values.email, password: values.password, addToast })
+        loginUser({
+          email: values.email,
+          password: values.password,
+          addToast,
+          navigate,
+        })
       );
       const user = JSON.parse(localStorage.getItem("UserInfo"));
       if (user) {

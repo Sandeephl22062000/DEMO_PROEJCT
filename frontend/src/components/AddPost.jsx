@@ -17,6 +17,7 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const AddPost = () => {
   const [images, setImages] = useState("");
@@ -24,7 +25,8 @@ const AddPost = () => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [caption, setCaption] = useState("");
   const [variant, setVariant] = useState(undefined);
-
+  const token = useSelector((state) => state.user.token);
+  console.log(token);
   const photoupload = (event) => {
     let file = event.target.files[0];
     if (!file) {
@@ -52,8 +54,6 @@ const AddPost = () => {
     setCaption(event.target.value);
   };
 
-  const { token } = JSON.parse(localStorage.getItem("UserInfo"));
-  console.log(token);
   const handleFormSubmit = (event) => {
     event.preventDefault();
     const createPost = async () => {

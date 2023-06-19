@@ -17,12 +17,14 @@ import Face from "@mui/icons-material/Face";
 import { Container, Button } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const Post = (props) => {
   const [like, AddLike] = React.useState(false);
   const [comment, setComment] = useState("");
   const [showComment, setShowComment] = useState([]);
-  const { token } = JSON.parse(localStorage.getItem("UserInfo"));
+  const token = useSelector((state) => state.user.token);
+  console.log(token);
 
   const addLike = async () => {
     const data = await axios.post(
@@ -160,7 +162,7 @@ const Post = (props) => {
                 {comment.user.name} {comment.comment}
               </Typography>
             ))}
-            
+
           <Link
             component="button"
             underline="none"

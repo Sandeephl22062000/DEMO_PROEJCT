@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import {
   Container,
   Grid,
   Card,
   CardMedia,
-
   Button,
   Box,
+  Table,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import Stack from "@mui/joy/Stack";
@@ -28,21 +27,51 @@ const style = {
 };
 
 const ProfilePage = () => {
-
-  const [variant, setVariant] = React.useState(undefined);
+  const [variant, setVariant] = useState(undefined);
+  const [posts, setPost] = useState([]);
+  const [show, setShowPost] = useState([]);
   const dispatch = useDispatch();
 
-  const localValues = JSON.parse(localStorage.getItem("UserInfo"));
-  dispatch(UserByID(localValues.data));
+  const Userid = localStorage.getItem("id");
+
   const user = useSelector((state) => state.user.user);
-  console.log(user);
-  const params = useParams();
-  const id = params.id;
-  
+  console.log("user", user?.data?.name);
+  console.log(user?.data?.posts);
+  const token = useSelector((state) => state.user.token);
+
+  const getPostByID = async (postId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/post/post/detail/${postId}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const post = response.data;
+      console.log(post);
+      setShowPost((prevShow) => [...prevShow, post]);
+    } catch (error) {
+      console.error("Error fetching post:", error);
+    }
+  };
+  useEffect(() => {
+    dispatch(UserByID(Userid));
+    posts.map((post) => getPostByID(post));
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setPost(user.data.posts);
+    }
+  }, [user]);
   return (
     <Container
       sx={{
-        minHeight: "80vh",
+        minHeight: "100vh",
         marginTop: "2rem",
         width: "70rem",
       }}
@@ -69,7 +98,7 @@ const ProfilePage = () => {
         <Grid item xs={8.7} sx={{ marginLeft: "15px" }}>
           <Card
             sx={{
-              height: "100%",
+              minheight: "100%",
               display: "flex",
               flexDirection: "column",
               borderRadius: "2%",
@@ -77,21 +106,25 @@ const ProfilePage = () => {
           >
             <div style={{ margin: "20px 0 0 30px" }}>
               <Typography>
-                <b>Name: </b>
-                {trainer.name}
+                <b>Name: {user?.data?.name}</b>
+                {/* {trainer.name} */}
               </Typography>
               <Typography>
-                <b>Email:</b> 
+                <b>Email: {user?.data?.email}</b>
               </Typography>
               <Typography>
-                <b>Specialization:</b>
+                <b>Posts:</b> {user?.data?.posts.length}
               </Typography>
-              <Typography>
-                <b>Description:</b>
-              </Typography>
-              <Typography>
-                <b>Experience:</b> years
-              </Typography>
+              {user?.data?.role === 1 && (
+                <>
+                  <Typography>
+                    <b>Specialization: {user?.data?.specialization}</b>
+                  </Typography>
+                  <Typography>
+                    <b>Experience:{user?.data?.experiences}</b> years
+                  </Typography>
+                </>
+              )}
             </div>
             <Box
               sx={{
@@ -101,10 +134,14 @@ const ProfilePage = () => {
               }}
             >
               <Button
+                onClick={() => {
+                  setVariant("solid");
+                }}
                 sx={{
                   background: "black",
                   color: "white",
                   height: "50px",
+                  borderRadius: "15px",
                   "&:hover": {
                     background: "black",
                   },
@@ -125,17 +162,17 @@ const ProfilePage = () => {
             }}
           ></Box>
 
-          <Card
-            sx={{
-              height: "50vh",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {console.log(post.length)}
-            {post.length === 0 ? (
+          {console.log(posts?.length)}
+          {posts.length === 0 ? (
+            <Card
+              sx={{
+                height: "50vh",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Box>
                 <Typography sx={{ fontSize: "35px", height: "100%" }}>
                   <div>
@@ -143,24 +180,26 @@ const ProfilePage = () => {
                   </div>
                 </Typography>
               </Box>
-            ) : (
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  justifyContent: "flex-end",
-                  gap: "16px",
-                  margin: "4px",
-                }}
-              >
-                {post.map((post) => (
-                  <Post post={post} />
-                ))}
-              </Box>
-            )}
-          </Card>
+            </Card>
+          ) : (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                justifyContent: "flex-end",
+                gap: "16px",
+                margin: "4px",
+              }}
+            >
+              {console.log("fwrefrtvwrtvg", posts)}
+              {posts.map((post) => (
+                <Post post={post} />
+              ))}
+            </Box>
+          )}
         </Grid>
       </Grid>
+
       <Modal open={!!variant} onClose={() => setVariant(undefined)}>
         <ModalDialog
           aria-labelledby="variant-modal-title"
@@ -168,12 +207,38 @@ const ProfilePage = () => {
           variant={variant}
         >
           <ModalClose />
-          <Typography id="variant-modal-title" component="h2" level="inherit">
-            Modal Dialog
-          </Typography>
-          <Typography id="variant-modal-description" textColor="inherit">
-            This is a `{variant}` modal dialog.
-          </Typography>
+          <Table aria-label="basic table">
+            <tbody>
+              <tr>
+                <td>Name:</td>
+                <td>{user?.data?.name}</td>
+                <td>
+                  <Button sx={{ color: "white" }}>Edit</Button>
+                </td>
+              </tr>
+              <tr>
+                <td>Email:</td>
+                <td>{user?.data?.name}</td>
+                <td>
+                  <Button sx={{ color: "white" }}>Edit</Button>
+                </td>
+              </tr>
+              <tr>
+                <td>Experience:</td>
+                <td>{user?.data?.experiences}</td>
+                <td>
+                  <Button sx={{ color: "white" }}>Edit</Button>
+                </td>
+              </tr>
+              <tr>
+                <td>Specialization:</td>
+                <td>{user?.data?.specialization}</td>
+                <td>
+                  <Button sx={{ color: "white" }}>Edit</Button>
+                </td>
+              </tr>
+            </tbody>
+          </Table>
         </ModalDialog>
       </Modal>
     </Container>

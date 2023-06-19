@@ -1,7 +1,14 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import React, { useState } from "react";
-import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import TransitionAlerts from "../TransitionAlerts";
 import { useNavigate } from "react-router-dom";
@@ -14,9 +21,7 @@ const TrainerLogin = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleForgotPassword =() =>{
-
-  }
+  const handleForgotPassword = () => {};
   const TrainerValidationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address")
@@ -39,36 +44,6 @@ const TrainerLogin = () => {
       const trainerID = trainer.data;
       console.log(trainer);
       dispatch(TrainerById(trainerID));
-      // const sendData = async () => {
-      //   const postData = await axios.post(
-      //     "http://localhost:3000/api/trainer/login",
-      //     {
-      //       email: values.email,
-      //       password: values.password,
-      //     }
-      //   );
-      //   const TrainerInfo = postData.data;
-      //   localStorage.setItem(
-      //     "TrainerInfo",
-      //     JSON.stringify({
-      //       id: TrainerInfo.data,
-      //       token: TrainerInfo.token,
-      //     })
-      //   );
-      //   const trainerInfo = JSON.parse(localStorage.getItem("TrainerInfo"));
-      //   console.log(trainerInfo.id);
-      //   const show = TrainerInfo.message;
-      //   console.log(show);
-      //   dispatch(trainerInfo);
-      //   setAlertMessage(show);
-      //   setShowAlert(true);
-      //   resetForm();
-      //   setTimeout(() => {
-      //     setShowAlert(false);
-      //   }, 3000);
-      // };
-      // sendData();
-      // navigate("/");
     },
   });
   return (
@@ -133,7 +108,7 @@ const TrainerLogin = () => {
             sx={{ width: "100%", margin: "8px" }}
           />
 
-<Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <Button
               type="submit"
               sx={{
