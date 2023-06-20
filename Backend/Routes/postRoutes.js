@@ -9,21 +9,18 @@ const {
   updateCaption,
   saveUnsavePost,
   getPostDetails,
-  newLike
+  newLike,
+  getPostPerById,
 } = require("../Controller/Post/PostController");
 const CommentController = require("../Controller/Post/CommentPost");
 // const PostController = require("../Controller/Post/PostController.js");
 const { protectingRoutes } = require("../Controller/AuthController");
-  
+
 const router = express();
 
-router
-  .route("/commentpost/:postID")
-  .post(protectingRoutes, newComment);
+router.route("/commentpost/:postID").post(protectingRoutes, newComment);
 
-  router
-  .route("/likepost/:postID")
-  .post(protectingRoutes,newLike);
+router.route("/likepost/:postID").post(protectingRoutes, newLike);
 
 router.route("/new").post(protectingRoutes, newPost);
 
@@ -33,6 +30,7 @@ router.route("/posts").get(protectingRoutes, getPostsOfFollowing);
 
 router.route("/post/detail/:id").get(protectingRoutes, getPostDetails);
 
+router.route("/postperuser").get(protectingRoutes, getPostPerById);
 // router
 //   .route("/likepost/:postID")
 //   .post(AuthController.protectingRoutes, LikePostController.likePost);

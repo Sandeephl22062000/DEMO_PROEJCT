@@ -48,6 +48,48 @@ export const UserByID = createAsyncThunk("/user/userDetail", async (id) => {
   return postData.data;
 });
 
+export const updateUser = createAsyncThunk(
+  "/user/updateUserdetail",
+  async (details) => {
+    const {
+      name,
+      email,
+      specialization,
+      experiences,
+      Userid,
+      token,
+      addToast,
+    } = details;
+    console.log(token);
+    try {
+      const postData = await axios.patch(
+        `http://localhost:8000/api/users/updatedetails/${Userid}`,
+        {
+          name,
+          email,
+          specialization,
+          experiences
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${details.token}`,
+          },
+        }
+      );
+      console.log(postData.data);
+      addToast(postData.data.message, {
+        appearance: "success",
+        autoDismiss: true,
+        autoDismissTimeout: 3000,
+      });
+      return postData.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -84,6 +126,18 @@ const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(UserByID.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

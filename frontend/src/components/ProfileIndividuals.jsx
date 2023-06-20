@@ -15,10 +15,11 @@ import Modal from "@mui/joy/Modal";
 import ModalClose from "@mui/joy/ModalClose";
 import ModalDialog from "@mui/joy/ModalDialog";
 import Typography from "@mui/joy/Typography";
-import Post from "../components/Trainer-Info/ProfilePost";
+import Post from "./Trainer-Info/ProfilePost";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { UserByID } from "../store/user";
+import { UserByID, updateUser } from "../store/user";
+import { useToasts } from "react-toast-notifications";
 const handleCommentButtonClick = () => {};
 const style = {
   width: "100%",
@@ -30,20 +31,46 @@ const ProfilePage = () => {
   const [variant, setVariant] = useState(undefined);
   const [posts, setPost] = useState([]);
   const [show, setShowPost] = useState([]);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [experiences, setExperiences] = useState("");
+  const [specialization, setSpecialization] = useState("");
   const dispatch = useDispatch();
-
+  const { addToast } = useToasts();
   const Userid = localStorage.getItem("id");
+  const token = useSelector((state) => state.user.token);
+
+  const handleEditClick = () => {
+    console.log(name, email, experiences, specialization);
+    dispatch(
+      updateUser({
+        name,
+        email,
+        specialization,
+        experiences,
+        Userid,
+        token,
+        addToast,
+      })
+    );
+    setName("");
+    setEmail("");
+    setExperiences("");
+    setSpecialization("");
+  };
+
+  useEffect(() => {
+    dispatch(UserByID(Userid));
+  }, []);
 
   const user = useSelector((state) => state.user.user);
   console.log("user", user?.data?.name);
   console.log(user?.data?.posts);
-  const token = useSelector((state) => state.user.token);
 
   const getPostByID = async (postId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/post/post/detail/${postId}`,
-        {},
+        `http://localhost:8000/api/post/postperuser`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -52,20 +79,19 @@ const ProfilePage = () => {
         }
       );
       const post = response.data;
-      console.log(post);
-      setShowPost((prevShow) => [...prevShow, post]);
+      console.log("response", post);
+      setShowPost(post.postToshow);
     } catch (error) {
       console.error("Error fetching post:", error);
     }
   };
   useEffect(() => {
-    dispatch(UserByID(Userid));
-    posts.map((post) => getPostByID(post));
+    getPostByID();
   }, []);
 
   useEffect(() => {
     if (user) {
-      setPost(user.data.posts);
+      setPost(user?.data?.posts);
     }
   }, [user]);
   return (
@@ -89,7 +115,7 @@ const ProfilePage = () => {
             }}
           >
             <CardMedia
-              // image=
+              image={user?.data?.photo}
               title="varverv"
               sx={{ height: "100%", width: "100%", borderRadius: "20%" }}
             />
@@ -163,7 +189,7 @@ const ProfilePage = () => {
           ></Box>
 
           {console.log(posts?.length)}
-          {posts.length === 0 ? (
+          {show.length === 0 ? (
             <Card
               sx={{
                 height: "50vh",
@@ -192,7 +218,7 @@ const ProfilePage = () => {
               }}
             >
               {console.log("fwrefrtvwrtvg", posts)}
-              {posts.map((post) => (
+              {show.map((post) => (
                 <Post post={post} />
               ))}
             </Box>
@@ -207,38 +233,60 @@ const ProfilePage = () => {
           variant={variant}
         >
           <ModalClose />
-          <Table aria-label="basic table">
+          <Table aria-label="basic table" sx={{ marginTop: "30px" }}>
             <tbody>
               <tr>
                 <td>Name:</td>
-                <td>{user?.data?.name}</td>
                 <td>
-                  <Button sx={{ color: "white" }}>Edit</Button>
+                  <input
+                    type="text"
+                    placeholder={user?.data?.name}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
                 </td>
               </tr>
               <tr>
                 <td>Email:</td>
-                <td>{user?.data?.name}</td>
                 <td>
-                  <Button sx={{ color: "white" }}>Edit</Button>
+                  <input
+                    type="text"
+                    placeholder={user?.data?.email}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </td>
               </tr>
               <tr>
                 <td>Experience:</td>
-                <td>{user?.data?.experiences}</td>
                 <td>
-                  <Button sx={{ color: "white" }}>Edit</Button>
+                  <input
+                    type="text"
+                    placeholder={user?.data?.experiences}
+                    value={experiences}
+                    onChange={(e) => setExperiences(e.target.value)}
+                  />
                 </td>
               </tr>
               <tr>
                 <td>Specialization:</td>
-                <td>{user?.data?.specialization}</td>
                 <td>
-                  <Button sx={{ color: "white" }}>Edit</Button>
+                  <input
+                    type="text"
+                    placeholder={user?.data?.specialization}
+                    value={specialization}
+                    onChange={(e) => setSpecialization(e.target.value)}
+                  />
                 </td>
               </tr>
             </tbody>
           </Table>
+          <Button
+            sx={{ background: "black", color: "white", margin: "15px" }}
+            onClick={handleEditClick}
+          >
+            EDIT
+          </Button>
         </ModalDialog>
       </Modal>
     </Container>

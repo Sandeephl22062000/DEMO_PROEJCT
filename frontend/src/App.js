@@ -20,7 +20,7 @@ import ClientsExperince from "./ClientsExperince";
 import ShowPost from "./components/ShowPost";
 import ChatInterface from "./components/Chat/chat.jsx";
 import ExeprmientFoodApi from "./components/Food/ExeprmientFoodApi";
-import Profile from "./components/Profilejk";
+import Profile from "./components/ProfileIndividuals.jsx";
 const App = () => {
   return (
     <div>
@@ -34,7 +34,7 @@ const App = () => {
           <Route path="/trainerlogin" element={<Trainerlogin />} />
 
           <Route path="/food" element={<UserInput />} />
-          <Route path="/food/:calories" element={<CalorieDetail />} />
+          <Route path="/food/calculateCalories" element={<CalorieDetail />} />
           <Route path="/calculatediet" element={<ExeprmientFoodApi />} />
 
           <Route path="/trainer" element={<TrainerCards />} />

@@ -71,6 +71,9 @@ function ResponsiveAppBar() {
     setAnchorElNav(event.currentTarget);
   };
 
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -201,7 +204,7 @@ function ResponsiveAppBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                <MenuItem onClick={handleCloseUserMenu}>
+                <MenuItem onClick={handleProfileClick}>
                   <Typography textAlign="center">My Profile</Typography>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>

@@ -4,12 +4,14 @@ const Food = require("../../Model/CalorieCountingModel");
 const AppError = "../../Error-Handling";
 const saveUserDetails = async (req, res, next) => {
   const { weight, height, gender, age, activity } = req.body;
+  console.log("req.user._id", req.user?._id);
   const userInfo = await Food.create({
     weight,
     height,
     gender,
     age,
     activity,
+    user: req.user?._id,
   });
   console.log(req.body);
   console.log(
@@ -38,10 +40,14 @@ const saveUserDetails = async (req, res, next) => {
   }
   console.log(activity, typeof activity);
   const maintenanceCalories = bmr * activtyFactor;
-  const maintainceCalory = +maintenanceCalories.toFixed(2) 
-  console.log(maintenanceCalories.toFixed(2), typeof +maintenanceCalories.toFixed(2));
+  const maintainceCalory = +maintenanceCalories.toFixed(2);
+  console.log(
+    maintenanceCalories.toFixed(2),
+    typeof +maintenanceCalories.toFixed(2)
+  );
   if (maintainceCalory) {
     res.status(201).json({
+      message: "Data Saved",
       data: maintainceCalory,
     });
   }
@@ -103,9 +109,20 @@ const CaloriesPerFood = catchAsync(async (req, res, next) => {
   }
 });
 
+const updateCalories = async (req, res, next) => {
+  const user = req.user._id.toString();
+  console.log("rfgvbsdrtgzerfg", user);
+  const data = await Food.findOne({ user });
+  console.log(data);
+};
 // Call the function and pass the food name as an argument
 
-module.exports = { calorieCounting, CaloriesPerFood, saveUserDetails };
+module.exports = {
+  calorieCounting,
+  CaloriesPerFood,
+  saveUserDetails,
+  updateCalories,
+};
 
 // For men:
 // BMR = 88.362 + (13.397 × weight in kg) + (4.799 × height in cm) - (5.677 × age in years)

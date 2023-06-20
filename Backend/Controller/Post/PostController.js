@@ -4,6 +4,7 @@ const catchAsync = require("../../utils/catchAync");
 const ErrorHandler = require("../../Error-Handling/error");
 // const deleteFile = require("../utils/deleteFile");
 const mongoose = require("mongoose");
+
 // Create New Post
 exports.newPost = catchAsync(async (req, res, next) => {
   try {
@@ -134,6 +135,30 @@ exports.newComment = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getPostPerById = async (req, res, next) => {
+  const data = await User.findById(req.user._id);
+  const Posts = data.posts;
+  console.log(Posts);
+
+  const postToshow = await Promise.all(
+    Posts.map(async (post) => {
+      const id = post.toString();
+      console.log("id", id);
+      const data = await Post.findById(id);
+      console.log("data", data);
+      return data;
+    })
+  );
+  console.log("bsgvfgbf", postToshow);
+  return res.status(200).json({
+    postToshow,
+    message: "Like Added",
+  });
+  // return res.status(200).json({
+  //  postToshow,
+  //   message: "Like Added",
+  // });
+};
 exports.newLike = catchAsync(async (req, res, next) => {
   console.log("user", req.user._id);
   const post = await Post.findById(req.params.postID);

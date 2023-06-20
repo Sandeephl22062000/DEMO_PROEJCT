@@ -28,7 +28,7 @@ const registerUser = catchAync(async (req, res, next) => {
     name,
     email,
     password: HashedPassword,
-    photo: req.body.filename,
+    photo: req.body.photo,
     role,
     specialization,
     experiences,
@@ -37,7 +37,7 @@ const registerUser = catchAync(async (req, res, next) => {
   if (user) {
     res.json({
       message: "Successfully register",
-      data: { name: user.name, email: user.email },
+      data: user,
     });
   } else {
     return next(new AppError("Something went wrong", 500));
@@ -57,6 +57,24 @@ const getAllUser = async (req, res) => {
   }
 };
 
+const updateuserDetail = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    console.log("id", id);
+    const user = await User.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    console.log(user);
+    if (user) {
+      res.status(200).json({
+        message: "Details Updated",
+        user,
+      });
+    }
+  } catch (error) {
+    return next(new AppError(error));
+  }
+};
 const getUserById = async (req, res, next) => {
   const user = await User.findById(req.params.id);
   res.status(201).json({
@@ -93,7 +111,6 @@ const loginUser = async (req, res, next) => {
 };
 
 const updatePassword = async (req, res) => {
-  //we are not using findbyidandupdate bcoz if do by this document middleware will not works it will only work in create and find
   const user = await User.findById(req.params.id).select("+password");
   if (req.body.password === user.password) {
     user.password = req.body.NewPassword;
@@ -117,6 +134,7 @@ module.exports = {
   loginUser,
   updatePassword,
   getUserById,
+  updateuserDetail,
 };
 
 /*  

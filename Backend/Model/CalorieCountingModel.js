@@ -6,11 +6,11 @@ const CalorieSchema = mongoose.Schema(
       ref: "User",
     },
     weight: {
-      type: String,
+      type: Number,
       required: [true, "Provide Weight"],
     },
     height: {
-      type: String,
+      type: Number,
       required: [true, "Provide height"],
     },
     gender: {
@@ -25,6 +25,10 @@ const CalorieSchema = mongoose.Schema(
       type: String,
       required: [true, "Provide actitvity"],
     },
+    user: {
+      type: String,
+    },
+    maintainceCalory: { type: Number },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
