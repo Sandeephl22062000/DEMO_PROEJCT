@@ -28,7 +28,9 @@ const CalorieSchema = mongoose.Schema(
     user: {
       type: String,
     },
-    maintainceCalory: { type: Number },
+    requireCalories: { type: Number },
+    requireProtein: { type: Number },
+    requireCarbs: { type: Number },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );

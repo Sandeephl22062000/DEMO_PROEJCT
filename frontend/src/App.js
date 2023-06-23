@@ -35,7 +35,10 @@ const App = () => {
 
           <Route path="/food" element={<UserInput />} />
           <Route path="/food/calculateCalories" element={<CalorieDetail />} />
-          <Route path="/calculatediet" element={<ExeprmientFoodApi />} />
+          <Route
+            path="/calculatediet/:protein/:carbs/:calories"
+            element={<ExeprmientFoodApi />}
+          />
 
           <Route path="/trainer" element={<TrainerCards />} />
           <Route path="/trainer/:id" element={<TrainerProfile />} />

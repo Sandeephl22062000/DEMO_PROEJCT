@@ -9,15 +9,16 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
+
 import { useState } from "react";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { calculateCalories } from "../../store/food";
+import { calculateCalories, priorFoodDetails } from "../../store/food";
 import { useToasts } from "react-toast-notifications";
-
+import { useEffect } from "react";
+// import Modal from "@mui/material/Modal";
+import PriorInfoModal from "./priorData";
 // import ResultPage from "./ResultPage";
 
 const UserInput = () => {
@@ -27,10 +28,17 @@ const UserInput = () => {
   const [weight, setWeight] = useState("");
   const [activity, setActivity] = useState("");
   const { addToast } = useToasts();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [dataAvailable, setDataAvailable] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.token);
+  const prorData = useSelector((state) => state.food.priorUserDetails);
+  const isLoading = useSelector((state) => state.food.loading);
+  console.log(isLoading);
+  console.log(!isLoading && prorData);
+
   const changeHandler = async () => {
     console.log(weight, height, age, gender, activity);
     dispatch(
@@ -46,6 +54,11 @@ const UserInput = () => {
     );
     navigate(`/food/calculateCalories`);
   };
+  useEffect(() => {
+    dispatch(priorFoodDetails(token)).then((result) => {
+      setDataAvailable(result.payload);
+    });
+  }, []);
 
   const style = {
     position: "absolute",
@@ -58,9 +71,26 @@ const UserInput = () => {
     boxShadow: 24,
     p: 4,
   };
+  const openModal = () => {
+    setModalOpen(true);
+  };
 
+  const closeModal = () => {
+    setModalOpen(false);
+  };
   return (
     <>
+      {dataAvailable && prorData.length > 0 && (
+        <Box sx= {{ textAlign: "center", marginTop: "50px" }}>
+          <Button onClick={openModal}>View Information</Button>
+
+          <PriorInfoModal
+            open={modalOpen}
+            handleClose={closeModal}
+            priorDataArray={prorData}
+          />
+        </Box>
+      )}
       <h3 style={{ textAlign: "center", marginTop: "50px" }}>
         Provide your details to calculate your Calories requirement
       </h3>

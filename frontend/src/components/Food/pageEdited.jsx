@@ -18,27 +18,38 @@ import { useState } from "react";
 
 import Food from "./Food";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { priorFoodCalory } from "../../store/food";
 
 const CalorieDetail = () => {
   const [showTrackPage, setShowTrackPage] = useState(false);
   const [Goal, setGoal] = useState("");
   const [Target, setTarget] = useState("");
   const [RequireCalories, setRequireCalories] = useState(0);
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.user.token);
+  const priorMaintainceData = useSelector(
+    (state) => state.food.priorFoodCaloryvalue
+  );
+  let maintainceCalory;
+  const Calories = useSelector((state) => state.food.calculateFoodCalories);
+  if (priorMaintainceData === 0) {
+    maintainceCalory = Calories;
+  } else {
+    maintainceCalory = priorMaintainceData;
+  }
   const [protein, setProtein] = useState(0);
   const [carbs, setCarbs] = useState(0);
-  const params = useParams();
+
   const navigate = useNavigate();
-  const maintainceCalory = useSelector(
-    (state) => state.food.calculateFoodCalories
-  );
+  useEffect(() => {
+    dispatch(priorFoodCalory(token));
+  }, []);
   console.log(maintainceCalory);
   const showData = (data) => (
     <Box>
       <h3>{`How much Weight do you want to ${data}?`}</h3>
-      <FormControl
-        sx={{ m: 1, width: "40%", minWidth: "200px" }}
-      ></FormControl>
+      <FormControl sx={{ m: 1, width: "40%", minWidth: "200px" }}></FormControl>
 
       {Goal && (
         <Select
@@ -93,7 +104,7 @@ const CalorieDetail = () => {
 
   const clickHandler = () => {
     setShowTrackPage(true);
-    navigate("/calculatediet");
+    navigate(`/calculatediet/${protein}/${carbs}/${RequireCalories}`);
   };
   return (
     <>
@@ -110,7 +121,7 @@ const CalorieDetail = () => {
         >
           {maintainceCalory && (
             <h2 style={{ margin: "50px" }}>
-              According to the Details provided your Maintaince Calory is
+              According to the Details provided your Maintaince Calory is{" "}
               {maintainceCalory}
             </h2>
           )}

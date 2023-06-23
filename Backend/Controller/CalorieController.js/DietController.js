@@ -5,22 +5,7 @@ const AppError = "../../Error-Handling";
 const saveUserDetails = async (req, res, next) => {
   const { weight, height, gender, age, activity } = req.body;
   console.log("req.user._id", req.user?._id);
-  const userInfo = await Food.create({
-    weight,
-    height,
-    gender,
-    age,
-    activity,
-    user: req.user?._id,
-  });
-  console.log(req.body);
-  console.log(
-    typeof weight,
-    typeof height,
-    typeof +gender,
-    typeof age,
-    typeof activity
-  );
+
   if (gender.toLowerCase() === "male") {
     bmr = 88.362 + 13.397 * +weight + 4.799 * +height - 5.677 * +age;
   } else {
@@ -41,10 +26,17 @@ const saveUserDetails = async (req, res, next) => {
   console.log(activity, typeof activity);
   const maintenanceCalories = bmr * activtyFactor;
   const maintainceCalory = +maintenanceCalories.toFixed(2);
-  console.log(
-    maintenanceCalories.toFixed(2),
-    typeof +maintenanceCalories.toFixed(2)
-  );
+  const userInfo = await Food.create({
+    weight,
+    height,
+    gender,
+    age,
+    activity,
+    user: req.user?._id,
+    requireProtein: null,
+    requireCalories: maintainceCalory,
+    requireCarbs: null,
+  });
   if (maintainceCalory) {
     res.status(201).json({
       message: "Data Saved",
@@ -108,12 +100,46 @@ const CaloriesPerFood = catchAsync(async (req, res, next) => {
     return next(new AppError("Something went wrong", 500));
   }
 });
+const updatecalories = (req, res) => {
+  const userId = req.user.id;
+  Food.find({ user: userId })
+    .then((foods) => {
+      res.json(foods);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({ message: "Server Error" });
+    });
+};
 
-const updateCalories = async (req, res, next) => {
-  const user = req.user._id.toString();
-  console.log("rfgvbsdrtgzerfg", user);
-  const data = await Food.findOne({ user });
-  console.log(data);
+const updateNutrients = async (req, res) => {
+  const userId = req.user.id;
+  const { requireProtein, requireCalories, requireCarbs } = req.body;
+  const UserData = await Food.find({ user: userId });
+
+  const updatedvalue = await Food.findByIdAndUpdate(
+    UserData._id,
+    {
+      requireProtein: requireProtein,
+      requireCalories: requireCalories,
+      requireCarbs: requireCarbs,
+    },
+    {
+      new: true,
+    }
+  );
+
+  res.status(201).json({
+    updatedvalue,
+  });
+};
+
+const getMaintainceCalory = async (req, res, next) => {
+  const UserID = req.user._id;
+  const Data = await Food.find({ user: UserID });
+  res.json({
+    maintainceCalory: Data[0]?.requireCalories,
+  });
 };
 // Call the function and pass the food name as an argument
 
@@ -121,7 +147,9 @@ module.exports = {
   calorieCounting,
   CaloriesPerFood,
   saveUserDetails,
-  updateCalories,
+  updatecalories,
+  updateNutrients,
+  getMaintainceCalory,
 };
 
 // For men:
