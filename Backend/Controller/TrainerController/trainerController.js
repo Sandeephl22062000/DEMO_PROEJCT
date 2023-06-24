@@ -53,8 +53,45 @@ const getTrainers = async (req, res, next) => {
     return next(new AppError("Something went wrong", 500));
   }
 };
+
+const approveRequest = async (req, res, next) => {
+  console.log("Vfvdzrvzdrvz");
+  const trainers = await User.findByIdAndUpdate(
+    req.body.id,
+    { isApproved: true },
+    { new: true }
+  );
+
+  console.log(trainers);
+  if (trainers) {
+    res.json({
+      message: "Success",
+      data: trainers,
+    });
+  } else {
+    return next(new AppError("Something went wrong", 500));
+  }
+};
+
+const TrainerToApprove = async (req, res, next) => {
+  console.log("Vfvdzrvzdrvz");
+  const trainers = await User.find({ isApproved: false });
+
+  console.log(trainers);
+  if (trainers) {
+    res.json({
+      message: "Success",
+      data: trainers,
+    });
+  } else {
+    return next(new AppError("Something went wrong", 500));
+  }
+};
+
 module.exports = {
+  TrainerToApprove,
   getAlltrainer,
   getTrainers,
   getTrainerById,
+  approveRequest,
 };

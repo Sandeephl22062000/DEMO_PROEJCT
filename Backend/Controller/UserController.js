@@ -4,43 +4,81 @@ const jwt = require("jsonwebtoken");
 const catchAync = require("../utils/catchAync");
 const AppError = require("../Error-Handling/error");
 const bcrypt = require("bcrypt");
+const axios = require("axios");
 require("dotenv").config();
 
 const registerUser = catchAync(async (req, res, next) => {
-  const { email, password, name, specialization, experiences, role } = req.body;
-  console.log(req.body);
-  if (!email || !password || !name) {
-    return next(new AppError("Provide All the Requied Details", 401));
-  }
+  if (req.body.googleAccessToken) {
+    accessToken = req.body.googleAccessToken;
+    const response = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("response", response);
+    const name = response.data.name;
+    const email = response.data.email;
+    const photo = response.data.picture;
+    console.log("name", name, photo, email);
 
-  if (name.split(" ").length > 3) {
-    return next(new AppError("Please Avoid Spaces", 401));
-  }
-  if (password.includes(" ") || email.includes(" "))
-    return next(new AppError("Please Avoid Spaces", 401));
+    const userFind = await User.findOne({ email });
 
-  const userFind = await User.findOne({ email });
-  if (userFind) return next(new AppError("This Email is Already registered"));
+    if (userFind) return next(new AppError("This Email is Already registered"));
 
-  const HashedPassword = await bcrypt.hash(password, 12);
-  console.log(HashedPassword);
-  const user = await User.create({
-    name,
-    email,
-    password: HashedPassword,
-    photo: req.body.photo,
-    role,
-    specialization,
-    experiences,
-  });
-
-  if (user) {
-    res.json({
-      message: "Successfully register",
-      data: user,
+    const user = await User.create({
+      name,
+      email,
+      photo,
     });
+    console.log("users", user);
+    if (user) {
+      res.json({
+        message: "Successfully register",
+        data: user,
+      });
+    } else {
+      return next(new AppError("Something went wrong", 500));
+    }
   } else {
-    return next(new AppError("Something went wrong", 500));
+    const { email, password, name, specialization, experiences, role } =
+      req.body;
+    console.log(req.body);
+    if (!email || !password || !name) {
+      return next(new AppError("Provide All the Requied Details", 401));
+    }
+
+    if (name.split(" ").length > 3) {
+      return next(new AppError("Please Avoid Spaces", 401));
+    }
+    if (password.includes(" ") || email.includes(" "))
+      return next(new AppError("Please Avoid Spaces", 401));
+
+    const userFind = await User.findOne({ email });
+    if (userFind) return next(new AppError("This Email is Already registered"));
+
+    const HashedPassword = await bcrypt.hash(password, 12);
+    console.log(HashedPassword);
+    const user = await User.create({
+      name,
+      email,
+      password: HashedPassword,
+      photo: req.body.photo,
+      role,
+      specialization,
+      experiences,
+    });
+
+    if (user) {
+      res.json({
+        message: "Successfully register",
+        data: user,
+      });
+    } else {
+      return next(new AppError("Something went wrong", 500));
+    }
   }
 });
 
@@ -83,30 +121,56 @@ const getUserById = async (req, res, next) => {
   });
 };
 const loginUser = async (req, res, next) => {
-  console.log("im here");
-  let email = req.body.email;
-  let password = req.body.password;
-  if (!email || !password) {
-    return next(new AppError("Provide email and password both", 401));
-  }
+  if (req.body.googleAccessToken) {
+    accessToken = req.body.googleAccessToken;
+    const response = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(response);
+    const email = response.data.email;
+    const UserInfo = await User.findOne({ email });
+    if (!UserInfo) return next(new AppError("Please Register First", 401));
 
-  const UserInfo = await User.findOne({ email });
-  if (!UserInfo) return next(new AppError("Please Register First", 401));
-
-  const PasswordChecking = await bcrypt.compare(password, UserInfo.password);
-  if (!PasswordChecking)
-    return next(new AppError("Please provide Correct Password", 401));
-
-  const token = jwt.sign({ id: UserInfo._id }, process.env.SECRET_KEY);
-  console.log(token);
-  if (UserInfo) {
-    res.json({
-      message: "Successfully login",
-      data: UserInfo._id,
-      token,
-    });
+    const token = jwt.sign({ id: UserInfo._id }, process.env.SECRET_KEY);
+    if (UserInfo) {
+      res.json({
+        message: "Successfully login",
+        data: UserInfo._id,
+        token,
+      });
+    } else {
+      return next(new AppError("Something went wrong", 500));
+    }
   } else {
-    return next(new AppError("Something went wrong", 500));
+    let email = req.body.email;
+    let password = req.body.password;
+    if (!email || !password) {
+      return next(new AppError("Provide email and password both", 401));
+    }
+
+    const UserInfo = await User.findOne({ email });
+    if (!UserInfo) return next(new AppError("Please Register First", 401));
+
+    const PasswordChecking = await bcrypt.compare(password, UserInfo.password);
+    if (!PasswordChecking)
+      return next(new AppError("Please provide Correct Password", 401));
+
+    const token = jwt.sign({ id: UserInfo._id }, process.env.SECRET_KEY);
+    console.log(token);
+    if (UserInfo) {
+      res.json({
+        message: "Successfully login",
+        data: UserInfo._id,
+        token,
+      });
+    } else {
+      return next(new AppError("Something went wrong", 500));
+    }
   }
 };
 

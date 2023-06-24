@@ -5,6 +5,8 @@ import { useToasts } from "react-toast-notifications";
 const initialUser = {
   userInfo: null,
   userInfoById: null,
+  ApprovedTrainer: null,
+  TrainersYetToApproved: [],
 };
 
 export const loginUser = createAsyncThunk(
@@ -48,6 +50,29 @@ export const UserByID = createAsyncThunk("/user/userDetail", async (id) => {
   return postData.data;
 });
 
+export const trainerToBeApproved = createAsyncThunk(
+  "/user/trainertoApprove",
+  async () => {
+    const getData = await axios.get(
+      `http://localhost:8000/api/trainer/trainertoapprove`
+    );
+    console.log(getData.data);
+    return getData.data.data;
+  }
+);
+export const approveRequest = createAsyncThunk(
+  "/user/approveRequest",
+  async (id) => {
+    const getData = await axios.post(
+      `http://localhost:8000/api/trainer/approverequest`,
+      {
+        id,
+      }
+    );
+    console.log(getData.data);
+    return getData.data;
+  }
+);
 export const updateUser = createAsyncThunk(
   "/user/updateUserdetail",
   async (details) => {
@@ -68,7 +93,7 @@ export const updateUser = createAsyncThunk(
           name,
           email,
           specialization,
-          experiences
+          experiences,
         },
         {
           headers: {
@@ -138,6 +163,30 @@ const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(approveRequest.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(approveRequest.fulfilled, (state, action) => {
+        state.loading = false;
+        state.ApprovedTrainer = action.payload;
+      })
+      .addCase(approveRequest.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(trainerToBeApproved.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(trainerToBeApproved.fulfilled, (state, action) => {
+        state.loading = false;
+        state.TrainersYetToApproved = action.payload;
+      })
+      .addCase(trainerToBeApproved.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

@@ -1,6 +1,6 @@
 import { useFormik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
+import { useGoogleLogin } from "@react-oauth/google";
 import {
   ref as addRef,
   uploadBytesResumable,
@@ -41,6 +41,23 @@ const Signup = () => {
       }
     );
   };
+  const handleGoogleLoginSuccess = async (tokenResponse) => {
+    const accessToken = tokenResponse.access_token;
+
+    const { data } = await axios.post(
+      "http://localhost:8000/api/users/register",
+      {
+        googleAccessToken: tokenResponse.access_token,
+      }
+    );
+    console.log(data.data.message);
+    addToast(data.data.message, {
+      appearance: "success",
+      autoDismiss: true,
+      autoDismissTimeout: 3000,
+    });
+  };
+  const login = useGoogleLogin({ onSuccess: handleGoogleLoginSuccess });
 
   const TrainerHandler = () => {
     navigate("/trainersignup");
@@ -244,6 +261,7 @@ const Signup = () => {
             </Button>
           </Box>
         </form>
+        <Button onClick={() => login()}>Register with google</Button>
       </Container>
     </>
   );

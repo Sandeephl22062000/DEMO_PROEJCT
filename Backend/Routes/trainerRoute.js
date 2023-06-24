@@ -4,6 +4,8 @@ const TrainerController = require("../Controller/TrainerController/trainerContro
 
 // router.route("/").post(TrainerController.RegisterTrainer);
 // router.route("/login").post(TrainerController.loginTrainer);
+router.route("/approverequest").post(TrainerController.approveRequest);
+router.route("/trainertoapprove").get(TrainerController.TrainerToApprove);
 
 // router.route("/login").post(TrainerController.loginRegister);
 router.route("/:trainer").get(TrainerController.getAlltrainer);

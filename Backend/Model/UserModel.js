@@ -7,7 +7,7 @@ const UserSchema = mongoose.Schema(
     name: {
       type: String,
       required: [true, "Please provide the username"],
-      unique: true,
+      // unique: true,
     },
     email: {
       type: String,
@@ -17,7 +17,6 @@ const UserSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please provide Password"],
       trim: true,
       minlength: 8,
       // maxlength: 30,
@@ -36,6 +35,10 @@ const UserSchema = mongoose.Schema(
         ref: "Post",
       },
     ],
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
     specialization: {
       type: String,
     },

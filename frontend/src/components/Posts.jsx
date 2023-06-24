@@ -117,8 +117,20 @@ const Post = (props) => {
           <Typography fontWeight="lg">{props.post.postedBy.name}</Typography>
         </CardContent>
         <CardOverflow>
-          <AspectRatio>
-            <img src={props.post.image} alt="" loading="lazy" />
+          <AspectRatio sx={{ width: "100%" }}>
+            <img
+              src={props.post.image}
+              alt=""
+              loading="lazy"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
           </AspectRatio>
         </CardOverflow>
         <CardContent

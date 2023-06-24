@@ -21,43 +21,60 @@ import ShowPost from "./components/ShowPost";
 import ChatInterface from "./components/Chat/chat.jsx";
 import ExeprmientFoodApi from "./components/Food/ExeprmientFoodApi";
 import Profile from "./components/ProfileIndividuals.jsx";
+import AdminDashboard from "./components/Admin/AdminDashboard";
+import { useState } from "react";
 const App = () => {
+  const [isAdmin, setIsAdmin] = useState(true);
   return (
     <div>
       <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/trainersignup" element={<TrainerSigup />} />
-          <Route path="/trainerlogin" element={<Trainerlogin />} />
+        {!isAdmin ? (
+          <>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/trainersignup" element={<TrainerSigup />} />
+              <Route path="/trainerlogin" element={<Trainerlogin />} />
 
-          <Route path="/food" element={<UserInput />} />
-          <Route path="/food/calculateCalories" element={<CalorieDetail />} />
-          <Route
-            path="/calculatediet/:protein/:carbs/:calories"
-            element={<ExeprmientFoodApi />}
-          />
+              <Route path="/food" element={<UserInput />} />
+              <Route
+                path="/food/calculateCalories"
+                element={<CalorieDetail />}
+              />
+              <Route
+                path="/calculatediet/:protein/:carbs/:calories"
+                element={<ExeprmientFoodApi />}
+              />
 
-          <Route path="/trainer" element={<TrainerCards />} />
-          <Route path="/trainer/:id" element={<TrainerProfile />} />
+              <Route path="/trainer" element={<TrainerCards />} />
+              <Route path="/trainer/:id" element={<TrainerProfile />} />
 
-          <Route path="/exercise" element={<Exercises />} />
-          <Route path="/chat" element={<ChatInterface />} />
-          <Route path="/clientexperiences" element={<ClientsExperince />} />
+              <Route path="/exercise" element={<Exercises />} />
+              <Route path="/chat" element={<ChatInterface />} />
+              <Route path="/clientexperiences" element={<ClientsExperince />} />
 
-          <Route path="/profile" element={<Profile />} />
+              <Route path="/profile" element={<Profile />} />
 
-          <Route
-            path="/execiseVideos/:muscle/:exercise"
-            element={<ExerciseVideos />}
-          />
-          <Route path="/activities" element={<ShowPost />} />
-          {/* <Route path="/inbox" element={<Inbox />} /> */}
-        </Routes>
+              <Route
+                path="/execiseVideos/:muscle/:exercise"
+                element={<ExerciseVideos />}
+              />
+              <Route path="/activities" element={<ShowPost />} />
+
+              {/* <Route path="/inbox" element={<Inbox />} /> */}
+            </Routes>
+            <Footer />
+          </>
+        ) : (
+          <>
+            <Routes>
+              <Route path="/admindashboard" element={<AdminDashboard />} />
+            </Routes>
+          </>
+        )}
       </BrowserRouter>
-      <Footer />
     </div>
   );
 };

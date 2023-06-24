@@ -1,7 +1,6 @@
 import { useFormik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import React from "react";
-import client from "../../features/client";
 import validationSchema from "../schema/schema";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import axios from "axios";
@@ -9,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { UserByID, loginUser } from "../../store/user";
 import { useToasts } from "react-toast-notifications";
-
+import { useGoogleLogin } from "@react-oauth/google";
+import GoogleIcon from "@mui/icons-material/Google";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -44,6 +44,13 @@ const Login = () => {
     },
   });
 
+  const handleGoogleLoginSuccess = async (tokenResponse) => {
+    const { data } = await axios.post("http://localhost:8000/api/users/login", {
+      googleAccessToken: tokenResponse.access_token,
+    });
+    console.log(data);
+  };
+  const login = useGoogleLogin({ onSuccess: handleGoogleLoginSuccess });
   const trainerLogin = () => {
     navigate("/trainerlogin");
   };
@@ -121,6 +128,27 @@ const Login = () => {
             </Box>
           </Box>{" "}
         </form>
+        <h4 style={{ marginLeft: "20px" }}>or</h4>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => login()}
+          sx={{
+            color: "white",
+            backgroundColor: "red",
+            width: "85%",
+            height: "50px",
+            fontSize: "19px",
+            marginLeft: "20px",
+            justifyContent: "center",
+            "&:hover": {
+              backgroundColor: "red",
+            },
+          }}
+          startIcon={<GoogleIcon />} // Replace with your Google icon
+        >
+          Login with Google
+        </Button>
       </Container>
     </>
   );
