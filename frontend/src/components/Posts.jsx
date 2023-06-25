@@ -60,12 +60,12 @@ const Post = (props) => {
     console.log(data.success.comments[0]);
   };
   const calculateTime = Math.floor(
-    (new Date() - new Date(props.post.createdAt)) / (1000 * 60 * 60 * 24)
+    (new Date() - new Date(props?.post?.createdAt)) / (1000 * 60 * 60 * 24)
   );
   useEffect(() => {
-    setShowComment(props.post.comments);
+    setShowComment(props.post?.comments);
   }, []);
-  console.log(props.post);
+  console.log("nsjfdnbotn", props?.post);
   return (
     <Container
       sx={{
@@ -104,22 +104,14 @@ const Post = (props) => {
               },
             }}
           >
-            <Avatar
-              size="sm"
-              src={props.post.postedBy.pic}
-              sx={{
-                p: 0.5,
-                border: "2px solid",
-                borderColor: "background.body",
-              }}
-            />
+            <Avatar size="sm" src={props.post?.postedBy?.photo}></Avatar>
           </Box>
-          <Typography fontWeight="lg">{props.post.postedBy.name}</Typography>
+          <Typography fontWeight="lg">{props.post?.postedBy?.name}</Typography>
         </CardContent>
         <CardOverflow>
-          <AspectRatio sx={{ width: "100%" }}>
+          <AspectRatio>
             <img
-              src={props.post.image}
+              src={props.post?.image}
               alt=""
               loading="lazy"
               style={{
@@ -144,12 +136,10 @@ const Post = (props) => {
               size="sm"
               onClick={addLike}
             >
-              <FavoriteBorder />
+              <FavoriteBorder /> {props?.post?.likes?.length}
             </IconButton>
-            {props.post.likes.length}
             <IconButton variant="plain" color="neutral" size="sm">
-              <ModeCommentOutlined />
-              {props.post.comments.length}
+              <ModeCommentOutlined /> {props.post?.comments?.length}
             </IconButton>
           </Box>
         </CardContent>
@@ -161,17 +151,17 @@ const Post = (props) => {
               fontWeight="lg"
               textColor="text.primary"
             >
-              {props.post?.postedBy.name}
+              {props.post?.postedBy?.name}
             </Link>{" "}
             {props.post?.caption}
           </Typography>
           {console.log(showComment)}
           {showComment
-            .slice()
+            ?.slice()
             .reverse()
             .map((comment) => (
               <Typography>
-                {comment.user.name} {comment.comment}
+                {comment?.user?.name} {comment?.comment}
               </Typography>
             ))}
 
@@ -203,22 +193,27 @@ const Post = (props) => {
             </Typography>
           </Link>
         </CardContent>
-        <CardOverflow sx={{ pb: "var(--Card-padding)", display: "flex" }}>
-          <IconButton size="sm" variant="plain" color="neutral" sx={{ ml: -1 }}>
-            <Face />
-          </IconButton>
-          <form onSubmit={addCommentHandler}>
+        <CardOverflow
+          sx={{
+            pb: "var(--Card-padding)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start", // Align items to the left
+          }}
+        >
+          <form onSubmit={addCommentHandler} style={{ display: "flex" }}>
             <Input
               variant="plain"
               size="sm"
               placeholder="Add a comment…"
-              sx={{ flexGrow: 1, mr: 1, "--Input-focusedThickness": "0px" }}
+              sx={{ flexGrow: 1, "--Input-focusedThickness": "0px" }}
               onChange={(e) => {
                 setComment(e.target.value);
               }}
             />
-
-            <Button type="submit"> Post</Button>
+            <Button type="submit" sx={{ ml: 1 }}>
+              Post
+            </Button>
           </form>
         </CardOverflow>
       </Card>

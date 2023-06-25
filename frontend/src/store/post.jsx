@@ -2,13 +2,25 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import client from "../features/client";
 import axios from "axios";
 const initialPost = {
-  postInfoById: [],
+  postInfoById: null,
 };
 
-export const postByID = createAsyncThunk("/user/userDetail", async (id) => {
-  const postData = await axios.get(`http://localhost:8000/post/detail/${id}`);
-  console.log(postData.data);
-  return postData.data;
+export const postByID = createAsyncThunk("/post/postDetail", async (data) => {
+  try {
+    const postData = await axios.get(
+      `http://localhost:8000/api/post/post/detail/${data.id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${data.token}`,
+        },
+      }
+    );
+    console.log(postData.data);
+    return postData.data.post;
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 const postSlice = createSlice({
@@ -23,7 +35,7 @@ const postSlice = createSlice({
       })
       .addCase(postByID.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.postInfoById = action.payload;
       })
       .addCase(postByID.rejected, (state, action) => {
         state.loading = false;

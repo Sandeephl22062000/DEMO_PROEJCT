@@ -13,10 +13,9 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
-
-import Food from "./Food";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { priorFoodCalory } from "../../store/food";
@@ -47,28 +46,34 @@ const CalorieDetail = () => {
   }, []);
   console.log(maintainceCalory);
   const showData = (data) => (
-    <Box>
+    <>
+      {" "}
       <h3>{`How much Weight do you want to ${data}?`}</h3>
-      <FormControl sx={{ m: 1, width: "40%", minWidth: "200px" }}></FormControl>
-
-      {Goal && (
-        <Select
-          labelId="demo-simple-select-autowidth-label"
-          id="demo-simple-select-autowidth"
-          value={Target}
-          onChange={(e) => {
-            setTarget(e.target.value);
-          }}
-          autoWidth
-          label="kg per week"
-        >
-          <MenuItem value="0.25">0.25</MenuItem>
-          <MenuItem value="0.50">0.50</MenuItem>
-          <MenuItem value="0.75">0.75</MenuItem>
-          <MenuItem value="1.0">1.0</MenuItem>
-        </Select>
-      )}
-    </Box>
+      <Box
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
+        <FormControl sx={{ m: 2, width: "40%", minWidth: "200px" }}>
+          {Goal && (
+            <Select
+              labelId="demo-simple-select-autowidth-label"
+              id="demo-simple-select-autowidth"
+              value={Target}
+              placeholder="target"
+              onChange={(e) => {
+                setTarget(e.target.value);
+              }}
+              autoWidth
+              label="target"
+            >
+              <MenuItem value="0.25">0.25</MenuItem>
+              <MenuItem value="0.50">0.50</MenuItem>
+              <MenuItem value="0.75">0.75</MenuItem>
+              <MenuItem value="1.0">1.0</MenuItem>
+            </Select>
+          )}
+        </FormControl>
+      </Box>
+    </>
   );
 
   const showdetail = () => {
@@ -144,7 +149,13 @@ const CalorieDetail = () => {
               <MenuItem value="Maintain">Maintain Weight</MenuItem>
             </Select>
           </FormControl>
-          {Goal === "Gain" ? showData("Gain") : showData("Loss")}
+          {Goal === "Gain" ? (
+            showData("Gain")
+          ) : Goal === "Loss" ? (
+            showData("Loss")
+          ) : (
+            <Typography>Track Your Calories</Typography>
+          )}
           {Target && (
             <TableContainer
               component={Paper}

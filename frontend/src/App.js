@@ -22,13 +22,15 @@ import ChatInterface from "./components/Chat/chat.jsx";
 import ExeprmientFoodApi from "./components/Food/ExeprmientFoodApi";
 import Profile from "./components/ProfileIndividuals.jsx";
 import AdminDashboard from "./components/Admin/AdminDashboard";
+import ProfileToShow from "./components/ProfileToShow";
+import ViewAllRecords from "./components/Food/ViewAllRecords";
 import { useState } from "react";
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(true);
   return (
     <div>
       <BrowserRouter>
-        {!isAdmin ? (
+        {isAdmin ? (
           <>
             <Navbar />
             <Routes>
@@ -47,9 +49,11 @@ const App = () => {
                 path="/calculatediet/:protein/:carbs/:calories"
                 element={<ExeprmientFoodApi />}
               />
+              <Route path="/viewallrecords" element={<ViewAllRecords />} />
 
               <Route path="/trainer" element={<TrainerCards />} />
               <Route path="/trainer/:id" element={<TrainerProfile />} />
+              <Route path="/user/:id" element={<ProfileToShow />} />
 
               <Route path="/exercise" element={<Exercises />} />
               <Route path="/chat" element={<ChatInterface />} />

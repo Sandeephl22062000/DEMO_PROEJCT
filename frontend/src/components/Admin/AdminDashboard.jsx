@@ -66,7 +66,6 @@ export default function ButtonAppBar() {
             </Box>
           </Grid>
           <Grid item xs={9.7} style={{ height: "100%" }}>
-            {/* Content for the right column */}
             {showTrainer && <TrainerCard />}
           </Grid>
         </Grid>

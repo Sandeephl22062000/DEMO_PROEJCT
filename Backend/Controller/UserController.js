@@ -83,12 +83,35 @@ const registerUser = catchAync(async (req, res, next) => {
 });
 
 const getAllUser = async (req, res) => {
-  const users = await User.find();
+  const users = await User.find().populate("posts");
   if (!users) return next(new AppError("No User to Display", 404));
   if (users) {
     res.json({
       message: "Successfully register",
       data: users,
+    });
+  } else {
+    return next(new AppError("Something went wrong", 500));
+  }
+};
+
+const searchusersWithKeyword = async (req, res) => {
+  const keyword = req.params.search
+    ? {
+        $or: [
+          { name: { $regex: req.params.search, $options: "i" } },
+          { email: { $regex: req.params.search, $options: "i" } },
+        ],
+      }
+    : {};
+  const users = await User.find(keyword);
+  console.log(users);
+  const usersExists = users.filter((user) => user.role === 0);
+  console.log(usersExists);
+  if (usersExists) {
+    res.json({
+      message: "Success",
+      data: usersExists,
     });
   } else {
     return next(new AppError("Something went wrong", 500));
@@ -114,7 +137,7 @@ const updateuserDetail = async (req, res, next) => {
   }
 };
 const getUserById = async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).populate("posts");
   res.status(201).json({
     message: "Succes",
     data: user,
@@ -199,6 +222,7 @@ module.exports = {
   updatePassword,
   getUserById,
   updateuserDetail,
+  searchusersWithKeyword,
 };
 
 /*  

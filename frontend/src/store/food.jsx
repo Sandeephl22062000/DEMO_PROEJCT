@@ -66,6 +66,7 @@ export const priorFoodCalory = createAsyncThunk(
   "/food/priorFoodCalory",
   async (token) => {
     try {
+      console.log("Vzdfvdrvzdfvfz")
       const response = await axios.post(
         "http://localhost:8000/api/users/getMaintainceCalory",
         {},

@@ -16,6 +16,7 @@ const CaloriesTrackSchema = new mongoose.Schema({
   sumFat: Number,
   sumCarbs: Number,
   sumProtein: Number,
+  user: String,
 });
 
 module.exports = mongoose.model("CaloriesModel", CaloriesTrackSchema);

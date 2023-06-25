@@ -13,7 +13,8 @@ import Modal from "@mui/joy/Modal";
 import ModalClose from "@mui/joy/ModalClose";
 import ModalDialog from "@mui/joy/ModalDialog";
 import Typography from "@mui/joy/Typography";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ExeprmientFoodApi = () => {
   const [search, setSearch] = useState("");
@@ -29,7 +30,7 @@ const ExeprmientFoodApi = () => {
   const TargetCarbs = params.carbs;
   const TargetProtein = params.protein;
   const TargetCalories = params.calories;
-
+  const navigate = useNavigate();
   const clickHandler = async () => {
     const data = await axios.get(
       `https://api.api-ninjas.com/v1/nutrition?query=${search}`,
@@ -112,7 +113,7 @@ const ExeprmientFoodApi = () => {
     setRows([...rows, newRow]);
     calculateTotals([...rows, newRow]);
   };
-
+  const token = useSelector((state) => state.user.token);
   const saveTrackedTable = async () => {
     try {
       console.log(name);
@@ -125,6 +126,12 @@ const ExeprmientFoodApi = () => {
           sumFat,
           sumCarbs,
           sumProtein,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       console.log(response.data);
@@ -277,13 +284,8 @@ const ExeprmientFoodApi = () => {
             </Table>
           </TableContainer>
         </div>
-        <Box
-          sx={{ margin: "10px", display: "flex", justifyContent: "flex-end" }}
-        >
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button
-            onClick={() => {
-              setVariant("solid");
-            }}
             sx={{
               display: "flex",
               justifyContent: "center",
@@ -291,27 +293,50 @@ const ExeprmientFoodApi = () => {
               background: "black",
               color: "white",
               height: "50px",
-              width: "150px",
-              marginRight: "10px",
+              width: "200px",
+              margin: "20px",
             }}
+            onClick={() => navigate(`/viewallrecords`)}
           >
-            View Result
+            View All Records
           </Button>
-          <Button
-            onClick={saveTrackedTable}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              background: "black",
-              color: "white",
-              height: "50px",
-              width: "150px",
-            }}
-          >
-            Save
-          </Button>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              onClick={() => {
+                setVariant("solid");
+              }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                background: "black",
+                color: "white",
+                height: "50px",
+                width: "150px",
+                marginRight: "10px",
+                margin: "20px 5px",
+              }}
+            >
+              View Result
+            </Button>
+            <Button
+              onClick={saveTrackedTable}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                background: "black",
+                color: "white",
+                height: "50px",
+                width: "150px",
+                margin: "20px 5px",
+              }}
+            >
+              Save
+            </Button>
+          </Box>
         </Box>
+
         <Modal open={!!variant} onClose={() => setVariant(undefined)}>
           <ModalDialog
             aria-labelledby="variant-modal-title"

@@ -6,7 +6,9 @@ const initialUser = {
   userInfo: null,
   userInfoById: null,
   ApprovedTrainer: null,
+  FindUserByID: null,
   TrainersYetToApproved: [],
+  SearchUserResult: [],
 };
 
 export const loginUser = createAsyncThunk(
@@ -47,7 +49,7 @@ export const loginUser = createAsyncThunk(
 export const UserByID = createAsyncThunk("/user/userDetail", async (id) => {
   const postData = await axios.get(`http://localhost:8000/api/users/${id}`);
   console.log(postData.data);
-  return postData.data;
+  return postData.data.data;
 });
 
 export const trainerToBeApproved = createAsyncThunk(
@@ -73,6 +75,17 @@ export const approveRequest = createAsyncThunk(
     return getData.data;
   }
 );
+export const searchUserKeyword = createAsyncThunk(
+  "/user/searchUser",
+  async (search) => {
+    const getData = await axios.get(
+      `http://localhost:8000/api/users/searchusers/${search}`
+    );
+    console.log(getData.data);
+    return getData.data.data;
+  }
+);
+
 export const updateUser = createAsyncThunk(
   "/user/updateUserdetail",
   async (details) => {
@@ -148,7 +161,7 @@ const userSlice = createSlice({
       })
       .addCase(UserByID.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.FindUserByID = action.payload;
       })
       .addCase(UserByID.rejected, (state, action) => {
         state.loading = false;
@@ -187,6 +200,18 @@ const userSlice = createSlice({
         state.TrainersYetToApproved = action.payload;
       })
       .addCase(trainerToBeApproved.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(searchUserKeyword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(searchUserKeyword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.SearchUserResult = action.payload;
+      })
+      .addCase(searchUserKeyword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

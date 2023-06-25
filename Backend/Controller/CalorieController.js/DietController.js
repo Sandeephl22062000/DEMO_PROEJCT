@@ -143,6 +143,7 @@ const getMaintainceCalory = async (req, res, next) => {
 };
 // Call the function and pass the food name as an argument
 
+
 module.exports = {
   calorieCounting,
   CaloriesPerFood,

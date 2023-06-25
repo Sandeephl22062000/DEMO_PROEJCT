@@ -115,7 +115,7 @@ const Signup = () => {
   });
   return (
     <>
-      <h3 style={{ textAlign: "center", marginTop: "50px" }}>Register</h3>
+      <h3 style={{ textAlign: "center", marginTop: "50px" }}>REGISTER</h3>
       <Container
         sx={{
           display: "flex",
@@ -124,12 +124,9 @@ const Signup = () => {
           justifyContent: "center",
           width: "40%",
           gap: "16px",
-          marginTop: "40px",
-          marginBottom: "50px",
-          padding: "20px",
         }}
       >
-        <div
+        {/* <div
           sx={{
             display: "flex",
             justifyContent: "space-between",
@@ -138,11 +135,11 @@ const Signup = () => {
           }}
         >
           <Button onClick={TrainerHandler}>Trainer</Button>
-        </div>
+        </div> */}
         <form
           onSubmit={formik.handleSubmit}
           autoComplete="off"
-          style={{ margin: "20px", padding: "10px" }}
+          style={{ padding: "10px" }}
         >
           {!images ? (
             <Box
@@ -150,14 +147,14 @@ const Signup = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                // width: "400px",
-                // height: "400px",
-                // borderRadius: "50%",
+                width: "200px",
+                height: "200px",
+                borderRadius: "50%",
                 overflow: "hidden",
                 margin: "auto",
               }}
             >
-              <img src={profileImage} alt="Preview" style={{ width: "50%" }} />
+              <img src={profileImage} alt="Preview" style={{ width: "100%" }} />
             </Box>
           ) : (
             <Box
@@ -165,14 +162,14 @@ const Signup = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                // width: "400px",
-                // height: "400px",
-                // borderRadius: "50%",
+                width: "200px",
+                height: "200px",
+                borderRadius: "50%",
                 overflow: "hidden",
                 margin: "auto",
               }}
             >
-              <img src={images} alt="Preview" style={{ width: "50%" }} />
+              <img src={images} alt="Preview" style={{ width: "100%" }} />
             </Box>
           )}
           <TextField

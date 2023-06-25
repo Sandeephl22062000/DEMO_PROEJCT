@@ -10,64 +10,48 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
-import Post from "./ProfilePost";
-import axios from "axios";
-const handleCommentButtonClick = () => {};
+
+import Post from "./Trainer-Info/ProfilePost";
+import { useDispatch } from "react-redux";
 const style = {
   width: "100%",
   maxWidth: 360,
   bgcolor: "background.paper",
 };
 
-const ProfilePage = () => {
-  const [trainer, setTrainer] = useState("");
-  const [post, showPost] = useState([]);
-  const params = useParams();
-  const id = params.id;
-  useEffect(() => {
-    const trainerDetail = async () => {
-      const { data } = await axios.get(`/api/trainer/trainerDetail/${id}`);
-      console.log(data.data);
-      setTrainer(data.data);
-      console.log(data.data.posts);
-      showPost(data.data.posts);
-    };
-    trainerDetail();
-  }, []);
+const ProfilePage = (props) => {
+  console.log(props);
   return (
     <Container
       sx={{
-        minHeight: "80vh",
+        minHeight: "150vh",
         marginTop: "2rem",
         width: "70rem",
       }}
     >
-      <Grid container sx={{ height: "200px" }}>
+      <Grid container sx={{ height: "100vh" }}>
         <Grid item xs={3.1}>
           <Card
             sx={{
-              height: "100%",
+              height: "200px",
+              width: "200px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              borderRadius: "20%",
+              borderRadius: "50%",
+              marginLeft: "22%",
             }}
           >
             <CardMedia
-              image={trainer.photo}
+              image={props.user.photo}
               title="varverv"
-              sx={{ height: "100%", width: "100%", borderRadius: "20%" }}
+              sx={{ height: "100%", width: "100%", borderRadius: "50%" }}
             />
           </Card>
         </Grid>
         <Grid item xs={8.7} sx={{ marginLeft: "15px" }}>
-          <Card
+          <Box
             sx={{
               height: "100%",
               display: "flex",
@@ -78,19 +62,19 @@ const ProfilePage = () => {
             <div style={{ margin: "20px 0 0 30px" }}>
               <Typography>
                 <b>Name: </b>
-                {trainer.name}
+                {props.user.name}
               </Typography>
               <Typography>
-                <b>Email:</b> {trainer.email}
+                <b>Email:</b> {props.user?.email}
               </Typography>
               <Typography>
-                <b>Specialization:</b> {trainer.specialization}
+                <b>Specialization:</b> {props.user?.specialization}
               </Typography>
               <Typography>
                 <b>Description:</b>
               </Typography>
               <Typography>
-                <b>Experience:</b> {trainer.experience} years
+                <b>Experience:</b> {props.user?.experience} years
               </Typography>
             </div>
             <Box
@@ -106,44 +90,20 @@ const ProfilePage = () => {
                 <Button>Message</Button>
               </Box>
             </Box>
-          </Card>
+          </Box>
         </Grid>
         <Grid item xs={12}>
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "10px",
-              color: "black",
-            }}
-          >
-            {/* <Button
-              onClick={() => {
-                setClientExperience(false);
-              }}
-            >
-              View Post
-            </Button>
-            <Button
-              onClick={() => {
-                setClientExperience(true);
-              }}
-            >
-              Clients Experience
-            </Button> */}
-          </Box>
-
-          <Card
-            sx={{
-              height: "50vh",
+              height: "100vh",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            {console.log(post.length)}
-            {post.length === 0 ? (
+            {console.log(props.user.posts.length)}
+            {props.user.posts?.length === 0 ? (
               <Box>
                 <Typography sx={{ fontSize: "35px", height: "100%" }}>
                   <div>
@@ -161,10 +121,10 @@ const ProfilePage = () => {
                   margin: "4px",
                 }}
               >
-                {post.map((post) => <Post post={post} />)}
+                <Post post={props.user.posts} />
               </Box>
             )}
-          </Card>
+          </Box>
         </Grid>
       </Grid>
     </Container>
